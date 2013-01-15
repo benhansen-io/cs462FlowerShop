@@ -1,6 +1,6 @@
 cs462FlowerShop
 ===============
 
-My implementation of BYU CS462 semester project[1].
+My implementation of BYU CS462 [semester project].
 
-[1]: https://github.com/windley/CS462-Event-Edition/blob/master/project/
+[semester project]: https://github.com/windley/CS462-Event-Edition/blob/master/project/
