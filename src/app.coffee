@@ -5,6 +5,6 @@ app = express()
 app.get "/", (req, res) ->
   res.send 'Ben Hansen'
 
-port = 80
+port = 8002
 app.listen(port)
 console.log 'Listening on port: ' + port
