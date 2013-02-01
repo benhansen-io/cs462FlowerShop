@@ -3,8 +3,8 @@ fs = require('fs')
 https = require('https');
 http = require('http');
 
-privateKey = fs.readFileSync('../certs/private-key.pem').toString();
-certificate = fs.readFileSync('../certs/cert.pem').toString();
+privateKey = fs.readFileSync('certs/private-key.pem').toString();
+certificate = fs.readFileSync('certs/cert.pem').toString();
 
 app = module.exports = express();
 
