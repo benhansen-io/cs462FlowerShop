@@ -25,7 +25,6 @@ app.configure 'development',  ->
   app.use(express.errorHandler())
 
 require(__dirname + '/server/router')(app);
-require(__dirname + '/server/modules/foursquare')(app);
 
 port = 8002
 securePort = 8003

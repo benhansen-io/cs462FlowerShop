@@ -178,6 +178,7 @@ module.exports = (app) ->
     AM.delAllRecords ->
       res.redirect "/print"
 
+  require(__dirname + '/modules/foursquare')(app);
 
   app.get "*", (req, res) ->
     res.render "404",
