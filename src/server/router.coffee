@@ -1,6 +1,7 @@
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
 EM = require("./modules/email-dispatcher")
+foursquare_authorize_url = require("./modules/foursquare")()
 module.exports = (app) ->
 
   # main login page
@@ -35,11 +36,15 @@ module.exports = (app) ->
         res.send o, 200
 
   # apps main page
+  app.get "/link_foursquare", (req, res) ->
+    res.render "link_foursquare",
+      title: "Link Foursquare Account"
+      foursquare_url: foursquare_authorize_url
+      udata: req.session.user
+
+  # apps main page
   app.get "/home", (req, res) ->
-    unless req.session.user?
-      # if user is not logged-in redirect back to login page
-      res.redirect "/"
-    else
+    if isSetupUser req, res
       res.render "home",
         title: "Home"
         countries: CT
@@ -57,7 +62,7 @@ module.exports = (app) ->
         udata: req.session.user
 
 
-  app.post "/home", (req, res) ->
+  app.post "/profile", (req, res) ->
     unless req.param("user") is `undefined`
       AM.updateAccount
         user: req.param("user")
@@ -183,3 +188,15 @@ module.exports = (app) ->
   app.get "*", (req, res) ->
     res.render "404",
       title: "Page Not Found"
+
+isSetupUser = (req, res) ->
+  unless req.session.user?
+    # if user is not logged-in redirect back to login page
+    res.redirect "/"
+  else
+    unless req.session.user.foursquare?
+      res.redirect "/link_foursquare"
+    else
+      return true
+
+
