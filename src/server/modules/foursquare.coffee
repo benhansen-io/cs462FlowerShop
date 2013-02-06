@@ -15,7 +15,11 @@ module.exports = (app) ->
         # if user is not logged-in redirect back to login page
         res.redirect "/"
       else
-        oa.getOAuthAccessToken req.param("code"), {}, (error, access_token, refresh_token, results) ->
+        additional_params =
+          grant_type: "authorization_code",
+          "redirect_uri": "https://ec2-107-20-72-23.compute-1.amazonaws.com/foursquare_rd"
+
+        oa.getOAuthAccessToken req.param("code"), additional_params, (error, access_token, refresh_token, results) ->
           if error
             console.log "error"
             console.log error
