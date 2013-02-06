@@ -8,10 +8,6 @@ module.exports = (app) ->
       # if user is not logged-in redirect back to login page
       res.redirect "/"
     else
-      getRequestTokenUrl = "https://www.google.com/accounts/OAuthGetRequestToken"
-
-      # GData specifid: scopes that wa want access to
-      gdataScopes = [querystring.escape("https://www.google.com/m8/feeds/"), querystring.escape("https://www.google.com/calendar/feeds/")]
 
       oa = new OAuth2(
         "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
