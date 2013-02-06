@@ -1,4 +1,5 @@
 OAuth2 = require("oauth").OAuth2
+AM = require("./modules/account-manager")
 
 module.exports = (app) ->
   oa = new OAuth2(
@@ -30,6 +31,9 @@ module.exports = (app) ->
             req.session.oa = oa
             req.session.access_token = access_token
             req.session.refresh_token = refresh_token
+            AM.addToAccount req.session.user.user, {foursquare_access_token: access_token}, (error, doc) ->
+              if error?
+                console.log "error in updating account: " + error
             res.redirect "/home"
   else
     additional_params =

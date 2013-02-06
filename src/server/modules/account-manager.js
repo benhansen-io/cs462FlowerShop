@@ -91,6 +91,19 @@ exports.updateAccount = function(newData, callback)
 	});
 }
 
+/* Add data to the user account */
+exports.addToAccount = function(username, newData, callback)
+{
+	accounts.findOne({user: username}, function(e, o) {
+          for (var prop in newData) {
+            if( newData.hasOwnProperty( prop ) ) {
+              o[prop] = newData[prop];
+            }
+          }
+          accounts.save(o, {safe: true}, callback);
+	});
+}
+
 exports.updatePassword = function(email, newPass, callback)
 {
 	accounts.findOne({email:email}, function(e, o){

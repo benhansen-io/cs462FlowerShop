@@ -194,7 +194,7 @@ isSetupUser = (req, res) ->
     # if user is not logged-in redirect back to login page
     res.redirect "/"
   else
-    unless req.session.user.foursquare?
+    unless req.session.user.foursquare_access_token?
       res.redirect "/link_foursquare"
     else
       return true
