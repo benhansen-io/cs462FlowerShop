@@ -1,5 +1,5 @@
 OAuth2 = require("oauth").OAuth2
-AM = require("./modules/account-manager")
+AM = require("./account-manager")
 
 module.exports = (app) ->
   oa = new OAuth2(
