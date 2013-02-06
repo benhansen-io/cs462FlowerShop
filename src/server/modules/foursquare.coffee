@@ -15,7 +15,7 @@ module.exports = (app) ->
         # if user is not logged-in redirect back to login page
         res.redirect "/"
       else
-        oa.getOAuthAccessToken (error, access_token, refresh_token, results) ->
+        oa.getOAuthAccessToken req.param("code"), {}, (error, access_token, refresh_token, results) ->
           if error
             console.log "error"
             console.log error
