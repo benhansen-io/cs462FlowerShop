@@ -49,11 +49,18 @@ getUserId = (user, callback) ->
     path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
 
   https.get(options, (res) ->
-    console.log "RESPONSE: " + res
-    result = JSON.parse(res)
-    console.log "GET SUCCESSFUL: " + result
-    user_id = result['response']['user']['id']
-    callback null, user_id
+    output = ''
+
+    res.on 'data', (chunk) ->
+      output += chunk;
+
+    res.on 'end', () ->
+      console.log "RESPONSE: " + output
+      result = JSON.parse(output)
+      console.log "GET SUCCESSFUL: " + result
+      user_id = result['response']['user']['id']
+      callback null, user_id
+
   ).on('error', (e) ->
     console.log 'ERROR: ' + e.message
     callback e
