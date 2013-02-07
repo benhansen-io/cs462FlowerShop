@@ -50,6 +50,7 @@ getUserId = (user, callback) ->
 
   https.get(options, (res) ->
     result = JSON.parse(res)
+    console.log "GET SUCCESSFUL: " + result
     user_id = result['response']['user']['id']
     callback null, user_id
   ).on('error', (e) ->
@@ -60,9 +61,9 @@ getUserId = (user, callback) ->
 
 module.exports.getCheckins = (user, number, callback) ->
   getUserId user, (error, userId) ->
-    unless error?
+    if error?
+      callback error
+    else
       console.log "UserID: " + userId
       callback null, userId
-    else
-      callback error
 
