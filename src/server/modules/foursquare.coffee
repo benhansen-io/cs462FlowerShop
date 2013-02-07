@@ -1,6 +1,6 @@
 OAuth2 = require("oauth").OAuth2
 AM = require("./account-manager")
-http = require('http')
+https = require('https')
 
 oa = new OAuth2(
   "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
@@ -48,7 +48,7 @@ getUserId = (user, callback) ->
     host: 'https://api.foursquare.com',
     path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
 
-  http.get(options, (res) ->
+  https.get(options, (res) ->
     result = JSON.parse(res)
     user_id = result['response']['user']['id']
     callback(null, user_id)
