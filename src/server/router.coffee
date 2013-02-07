@@ -44,20 +44,20 @@ module.exports = (app) ->
 
   # apps main page
   app.get "/home", (req, res) ->
-    FS.getCheckins req.session.user, (error, checkins) ->
-      if error?
-        res.render "home",
-          title: "home"
-          countries: CT
-          udata: req.session.user
-          error: error
-
-      if isSetupUser req, res
-        res.render "home",
-          title: "Home"
-          countries: CT
-          udata: req.session.user
-          checkins: checkins
+    if isSetupUser req, res
+      FS.getCheckins req.session.user, (error, checkins) ->
+        if error?
+          res.render "home",
+            title: "home"
+            countries: CT
+            udata: req.session.user
+            error: error
+        else
+          res.render "home",
+            title: "Home"
+            countries: CT
+            udata: req.session.user
+            checkins: checkins
 
   # logged-in user homepage
   app.get "/profile", (req, res) ->
