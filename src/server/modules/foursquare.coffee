@@ -1,14 +1,14 @@
 OAuth2 = require("oauth").OAuth2
 AM = require("./account-manager")
 
-module.exports = (app) ->
-  oa = new OAuth2(
-    "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
-      "YBCYO5LXII2UWWX0JQ35A1DJCAWG4V30UMWXNF2YIWWHU4UZ",
-      "https://foursquare.com/",
-      "/oauth2/authenticate"
-      "/oauth2/access_token")
+oa = new OAuth2(
+  "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
+    "YBCYO5LXII2UWWX0JQ35A1DJCAWG4V30UMWXNF2YIWWHU4UZ",
+    "https://foursquare.com/",
+    "/oauth2/authenticate"
+    "/oauth2/access_token")
 
+module.exports.routes = (app) ->
   if app?
     # Request an OAuth Request Token, and redirects the user to authorize it
     app.get "/foursquare_rd", (req, res) ->
@@ -34,9 +34,35 @@ module.exports = (app) ->
             AM.addToAccount req.session.user.user, {foursquare_access_token: access_token}, (error, doc) ->
               if error?
                 console.log "error in updating account: " + error
+            req.session.user.foursquare_access_token = access_token
             res.redirect "/home"
-  else
-    additional_params =
-      "redirect_uri": "https://ec2-107-20-72-23.compute-1.amazonaws.com/foursquare_rd"
-      "response_type": "code"
-    return oa.getAuthorizeUrl additional_params
+
+additional_params =
+  "redirect_uri": "https://ec2-107-20-72-23.compute-1.amazonaws.com/foursquare_rd"
+  "response_type": "code"
+module.exports.authorizeUrl = oa.getAuthorizeUrl additional_params
+
+getUserId = (user, callback) ->
+  options =
+    host: 'https://api.foursquare.com',
+    path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
+
+  http.get(options, (res) ->
+    result = JSON.parse(res)
+    user_id = result['response']['user']['id']
+    callback(null, user_id)
+  ).on('error', (e) ->
+    console.log('ERROR: ' + e.message);
+    callback(e)
+  )
+
+
+module.exports.getCheckins = (user, number, callback) ->
+  getUserId(user, (error, userId) ->
+    unless error?
+      console.log "UserID: " + userId
+      callback null, userId
+    else
+      callback error
+  )
+
