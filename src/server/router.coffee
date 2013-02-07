@@ -45,7 +45,7 @@ module.exports = (app) ->
   # apps main page
   app.get "/home", (req, res) ->
     if isSetupUser req, res
-      FS.getCheckins req.session.user, (error, checkins) ->
+      FS.getCheckins req.session.user, 10, (error, checkins) ->
         if error?
           res.render "home",
             title: "home"

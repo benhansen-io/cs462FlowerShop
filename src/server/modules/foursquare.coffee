@@ -55,9 +55,7 @@ getUserId = (user, callback) ->
       output += chunk;
 
     res.on 'end', () ->
-      console.log "RESPONSE: " + output
       result = JSON.parse(output)
-      console.log "GET SUCCESSFUL: " + result
       user_id = result['response']['user']['id']
       callback null, user_id
 
@@ -72,6 +70,5 @@ module.exports.getCheckins = (user, number, callback) ->
     if error?
       callback error
     else
-      console.log "UserID: " + userId
       callback null, userId
 
