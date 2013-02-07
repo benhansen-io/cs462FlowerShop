@@ -45,25 +45,24 @@ module.exports.authorizeUrl = oa.getAuthorizeUrl additional_params
 
 getUserId = (user, callback) ->
   options =
-    host: 'https://api.foursquare.com',
+    host: 'api.foursquare.com',
     path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
 
   https.get(options, (res) ->
     result = JSON.parse(res)
     user_id = result['response']['user']['id']
-    callback(null, user_id)
+    callback null, user_id
   ).on('error', (e) ->
-    console.log('ERROR: ' + e.message);
-    callback(e)
+    console.log 'ERROR: ' + e.message
+    callback e
   )
 
 
 module.exports.getCheckins = (user, number, callback) ->
-  getUserId(user, (error, userId) ->
+  getUserId user, (error, userId) ->
     unless error?
       console.log "UserID: " + userId
       callback null, userId
     else
       callback error
-  )
 
