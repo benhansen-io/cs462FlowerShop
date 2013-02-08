@@ -25,7 +25,7 @@ module.exports = (app) ->
       else
         FS.getCheckins profileuser.foursquare_access_token, 10, (e, records) ->
           if e?
-            res.send "Error looking up checkins", 500
+            res.send "Error looking up checkins: " + e, 500
           else if ensureHasSetupFoursquare req, res
             console.log records
             res.render "profile",
