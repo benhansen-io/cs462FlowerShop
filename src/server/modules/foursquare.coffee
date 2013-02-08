@@ -35,7 +35,10 @@ module.exports.routes = (app) ->
             AM.addToAccount req.session.user.user, {foursquare_access_token: access_token}, (error, doc) ->
               if error?
                 console.log "error in updating account: " + error
-            req.session.user.foursquare_access_token = access_token
+            if req.session.user?
+              req.session.user.foursquare_access_token = access_token
+            else
+              console.log "Trying to add access_token to non-existent user"
             res.redirect "/home"
 
 additional_params =
@@ -59,10 +62,10 @@ getJSON = (options, callback) ->
   )
 
 
-getUserId = (user, callback) ->
+getUserId = (foursquare_access_token, callback) ->
   options =
     host: 'api.foursquare.com',
-    path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
+    path: '/v2/users/self?oauth_token=' + foursquare_access_token
 
   getJSON options, (error, result) ->
     if error?
