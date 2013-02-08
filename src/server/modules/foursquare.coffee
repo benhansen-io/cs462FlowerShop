@@ -55,6 +55,7 @@ getJSON = (options, callback) ->
 
     res.on 'end', () ->
       result = JSON.parse(output)
+      callback result
 
   ).on('error', (e) ->
     console.log 'ERROR: ' + e.message
