@@ -18,9 +18,7 @@ module.exports = (app) ->
 
   # main login page
   app.get "/profile/:user", (req, res) ->
-    user = req.params[0]
-    console.log user
-    console.log req.params
+    user = req.params["user"]
     AM.findByUsername user, (e, profileuser) ->
       if e? or !profileuser?
         res.send "User not found", 400
