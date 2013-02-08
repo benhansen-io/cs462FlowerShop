@@ -39,15 +39,11 @@ module.exports.routes = (app) ->
             res.redirect "/home"
 
 additional_params =
-  "redirect_uri": "https://ec2-107-20-72-23.compute-1.amazonaws.com/foursquare_rd"
+  "redirect_uri": "https://ec2-54-242-133-248.compute-1.amazonaws.com/foursquare_rd"
   "response_type": "code"
 module.exports.authorizeUrl = oa.getAuthorizeUrl additional_params
 
-getUserId = (user, callback) ->
-  options =
-    host: 'api.foursquare.com',
-    path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
-
+getJSON = (options, callback) ->
   https.get(options, (res) ->
     output = ''
 
@@ -56,8 +52,6 @@ getUserId = (user, callback) ->
 
     res.on 'end', () ->
       result = JSON.parse(output)
-      user_id = result['response']['user']['id']
-      callback null, user_id
 
   ).on('error', (e) ->
     console.log 'ERROR: ' + e.message
@@ -65,10 +59,27 @@ getUserId = (user, callback) ->
   )
 
 
-module.exports.getCheckins = (user, number, callback) ->
-  getUserId user, (error, userId) ->
+getUserId = (user, callback) ->
+  options =
+    host: 'api.foursquare.com',
+    path: '/v2/users/self?oauth_token=' + user.foursquare_access_token
+
+  getJSON options, (error, result) ->
     if error?
       callback error
     else
-      callback null, userId
+      user_id = result['response']['user']['id']
+      callback null, user_id
 
+
+module.exports.getCheckins = (foursquare_access_token, number, callback) ->
+  options =
+    host: 'api.foursquare.com',
+    path: '/v2/users/self/checkins?oauth_token=' + foursquare_access_token + '&limit=' + number
+
+  getJSON options, (error, result) ->
+    if error?
+      callback error
+    else
+      checkins = result['response']['checkins']['items']
+      callback null, checkins

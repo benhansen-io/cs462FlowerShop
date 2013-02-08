@@ -133,9 +133,18 @@ exports.validateResetLink = function(email, passHash, callback)
 	});
 }
 
+exports.getAllActiveRecords = function(callback)
+{
+	accounts.find({foursquare_access_token: {$exists:true}}).toArray(
+		function(e, res) {
+		if (e) callback(e)
+		else callback(null, res)
+	});
+};
+
 exports.getAllRecords = function(callback)
 {
-	accounts.find().toArray(
+	accounts.find({foursquare_access_token: {$exists:true}}).toArray(
 		function(e, res) {
 		if (e) callback(e)
 		else callback(null, res)
@@ -193,6 +202,14 @@ var findById = function(id, callback)
 	});
 };
 
+var findByUsername = function(user, callback)
+{
+	accounts.findOne({user: user},
+		function(e, res) {
+		if (e) callback(e)
+		else callback(null, res)
+	});
+};
 
 var findByMultipleFields = function(a, callback)
 {

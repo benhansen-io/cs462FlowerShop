@@ -6,21 +6,25 @@ block content
 		div.navbar-inner
 			div.container-fluid
 				ul#global-nav.nav.pull-left
-					a(href='#').brand Control Panel
+					a(href='#').brand Flower Shop
+				- if(udata) {
 				button#btn-logout.btn.btn-primary
 					i.icon-lock.icon-white
-					| Sign Out
+					| Logout
+				- } else {
+				button#btn-login-bar.btn.btn-primary
+					i.icon-lock.icon-white
+					| Login
+				- }
 
-	.checkins #{checkins}
+	#container
+		h2 Active users on this site:
+		ul#users
+			each user in users
+				li: a(href='/profile/' + user.user) #{user.name}
+
+
+
 
 	include modals/alert
 	include modals/confirm
-
-block scripts
-	script(src='/vendor/jquery.min.js')
-	script(src='/vendor/jquery.form.js')
-	script(src='/vendor/bootstrap-modal.js')
-	script(src='/vendor/bootstrap-transition.js')
-	script(src='/js/views/home.js')
-	script(src='/js/controllers/homeController.js')
-	script(src='/js/form-validators/accountValidator.js')

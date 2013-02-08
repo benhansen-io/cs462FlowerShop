@@ -6,23 +6,60 @@ module.exports = (app) ->
 
   # main login page
   app.get "/", (req, res) ->
-    # check if the user's credentials are saved in a cookie
-    if req.cookies.user is `undefined` or req.cookies.pass is `undefined`
+    AM.getAllActiveRecords (e, records) ->
+      if e?
+        res.send "Error looking up records", 500
+      else if ensureHasSetupFoursquare req, res
+        console.log records
+        res.render "home",
+          title: "FlowerShop"
+          udata: req.session.user
+          users: records
+
+  # main login page
+  app.get "/profile/:user", (req, res) ->
+    user = req.params[0]
+    AM.findByUsername user, (e, profileuser) ->
+      if e?
+        res.send "User not found", 400
+      else
+        FS.getCheckins profileuser.foursquare_access_token, 10, (e, records) ->
+          if e?
+            res.send "Error looking up checkins", 500
+          else if ensureHasSetupFoursquare req, res
+            console.log records
+            res.render "profile",
+              title: "FlowerShop"
+              udata: req.session.user
+              profileuser: profileuser
+              users: records
+
+  # main login page
+  app.get "/login", (req, res) ->
+    # if already logged in, return to default page
+    if req.session.user?
+      res.redirect "/"
+      return
+
+    renderLogin = () ->
       res.render "login",
         title: "Hello - Please Login To Your Account"
+
+    # check if the user's credentials are saved in a cookie
+    if req.cookies.user is `undefined` or req.cookies.pass is `undefined`
+      renderLogin()
     else
       # attempt automatic login
       AM.autoLogin req.cookies.user, req.cookies.pass, (o) ->
         if o?
           req.session.user = o
           res.redirect "/home"
+          udata: req.session.user
         else
-          res.render "login",
-            title: "Hello - Please Login To Your Account"
+          renderLogin()
 
 
-
-  app.post "/", (req, res) ->
+  app.post "/login", (req, res) ->
     AM.manualLogin req.param("user"), req.param("pass"), (e, o) ->
       unless o
         res.send e, 400
@@ -42,36 +79,8 @@ module.exports = (app) ->
       foursquare_url: FS.authorizeUrl
       udata: req.session.user
 
-  # apps main page
-  app.get "/home", (req, res) ->
-    if isSetupUser req, res
-      FS.getCheckins req.session.user, 10, (error, checkins) ->
-        if error?
-          res.render "home",
-            title: "home"
-            countries: CT
-            udata: req.session.user
-            error: error
-        else
-          res.render "home",
-            title: "Home"
-            countries: CT
-            udata: req.session.user
-            checkins: checkins
 
-  # logged-in user homepage
-  app.get "/profile", (req, res) ->
-    unless req.session.user?
-      # if user is not logged-in redirect back to login page
-      res.redirect "/"
-    else
-      res.render "profile",
-        title: "Profile"
-        countries: CT
-        udata: req.session.user
-
-
-  app.post "/home", (req, res) ->
+  app.post "/login", (req, res) ->
     unless req.param("user") is `undefined`
       AM.updateAccount
         user: req.param("user")
@@ -99,6 +108,19 @@ module.exports = (app) ->
       res.clearCookie "pass"
       req.session.destroy (e) ->
         res.send "ok", 200
+
+  # logged-in user homepage
+  app.get "/account", (req, res) ->
+    unless req.session.user?
+      # if user is not logged-in redirect back to login page
+      res.redirect "/"
+    else
+      res.render "account",
+        title: "Account"
+        countries: CT
+        udata: req.session.user
+
+
 
   # creating new accounts
   app.get "/signup", (req, res) ->
@@ -198,14 +220,18 @@ module.exports = (app) ->
     res.render "404",
       title: "Page Not Found"
 
-isSetupUser = (req, res) ->
+ensureIsSetupUser = (req, res) ->
   unless req.session.user?
     # if user is not logged-in redirect back to login page
     res.redirect "/"
   else
-    unless req.session.user.foursquare_access_token?
-      res.redirect "/link_foursquare"
-    else
+    ensureHasSetupFoursquare req, res
+
+ensureHasSetupFoursquare = (req, res) ->
+  if req.session.user?
+    if req.session.user.foursquare_access_token?
       return true
-
-
+    else
+      res.redirect "/link_foursquare"
+  else
+    true

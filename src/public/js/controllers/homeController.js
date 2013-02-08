@@ -5,9 +5,6 @@ function HomeController()
 // bind event listeners to button clicks //
 	var that = this;
 
-// handle user logout //
-	$('#btn-logout').click(function(){ that.attemptLogout(); });
-
 // confirm account deletion //
 	$('#account-form-btn1').click(function(){$('.modal-confirm').modal('show')});
 
@@ -31,21 +28,6 @@ function HomeController()
 		});
 	}
 
-	this.attemptLogout = function()
-	{
-		var that = this;
-		$.ajax({
-			url: "/home",
-			type: "POST",
-			data: {logout : true},
-			success: function(data){
-	 			that.showLockedAlert('You are now logged out.<br>Redirecting you back to the homepage.');
-			},
-			error: function(jqXHR){
-				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-			}
-		});
-	}
 
 	this.showLockedAlert = function(msg){
 		$('.modal-alert').modal({ show : false, keyboard : false, backdrop : 'static' });
