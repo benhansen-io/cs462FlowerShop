@@ -19,8 +19,10 @@ module.exports = (app) ->
   # main login page
   app.get "/profile/:user", (req, res) ->
     user = req.params[0]
+    console.log user
+    console.log req.params
     AM.findByUsername user, (e, profileuser) ->
-      if e?
+      if e? or !profileuser?
         res.send "User not found", 400
       else
         FS.getCheckins profileuser.foursquare_access_token, 10, (e, records) ->
