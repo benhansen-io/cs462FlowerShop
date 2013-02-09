@@ -20,7 +20,7 @@ block content
 
 
 	#container
-		if profileuser.user === udata.user
+		if typeof(udata) != "undefined" && profileuser.user === udata.user
 			h2 Your most recent checkin data:
 		else
 			h2 #{profileuser.name}'s most recent checkin:
