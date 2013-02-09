@@ -26,7 +26,7 @@ block content
 			h2 #{profileuser.name}'s most recent checkin:
 		ul#checkins
 			- var numbertodisplay = profileuser.user === udata.user ? 10 : 1
-			- for(int i = 0; i < numbertodisplay; i++) {
+			- for(i = 0; i < numbertodisplay; i++) {
 			- 	checkin = checkins[i];
 				li: #{checkin.venue.name} near #{checkin.venue.location.city} saying #{checkin.shout}
 			- }
