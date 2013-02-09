@@ -24,6 +24,7 @@ module.exports = (app) ->
         res.send "User not found", 400
       else
         FS.getCheckins profileuser.foursquare_access_token, 10, (e, records) ->
+          console.log JSON.stringify records
           if e?
             res.send "Error looking up checkins: " + JSON.stringify(e), 500
           else if ensureHasSetupFoursquare req, res
@@ -52,7 +53,7 @@ module.exports = (app) ->
       AM.autoLogin req.cookies.user, req.cookies.pass, (o) ->
         if o?
           req.session.user = o
-          res.redirect "/home"
+          res.redirect "/"
           udata: req.session.user
         else
           renderLogin()
