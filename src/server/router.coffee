@@ -27,12 +27,11 @@ module.exports = (app) ->
           if e?
             res.send "Error looking up checkins: " + JSON.stringify(e), 500
           else if ensureHasSetupFoursquare req, res
-            console.log records
             res.render "profile",
               title: "FlowerShop"
               udata: req.session.user
               profileuser: profileuser
-              users: records
+              checkins: records
 
   # main login page
   app.get "/login", (req, res) ->
