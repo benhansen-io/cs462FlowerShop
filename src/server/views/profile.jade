@@ -27,6 +27,9 @@ block content
 			h2 #{profileuser.name}'s most recent checkin:
 		ul#checkins
 			- var numbertodisplay = lookingAtOwnProfile ? 10 : 1
+			- if( numbertodisplay > checkins.length ) {
+			- 	numbertodisplay = checkins.length;
+			- }
 			- for(i = 0; i < numbertodisplay; i++) {
 			-	checkin = checkins[i];
 				li: #{checkin.venue.name} near #{checkin.venue.location.city} saying #{checkin.shout}
