@@ -60,17 +60,23 @@ module.exports = (app) ->
 
 
   app.post "/login", (req, res) ->
-    AM.manualLogin req.param("user"), req.param("pass"), (e, o) ->
-      unless o
-        res.send e, 400
-      else
-        req.session.user = o
-        if req.param("remember-me") is "true"
-          res.cookie "user", o.user,
-            maxAge: 900000
-          res.cookie "pass", o.pass,
-            maxAge: 900000
-        res.send o, 200
+    unless req.param("user") is `undefined`
+      AM.manualLogin req.param("user"), req.param("pass"), (e, o) ->
+        unless o
+          res.send e, 400
+        else
+          req.session.user = o
+          if req.param("remember-me") is "true"
+            res.cookie "user", o.user,
+              maxAge: 900000
+              res.cookie "pass", o.pass,
+                maxAge: 900000
+                res.send o, 200
+    else if req.param("logout") is "true"
+      res.clearCookie "user"
+      res.clearCookie "pass"
+      req.session.destroy (e) ->
+        res.send "ok", 200
 
   # apps main page
   app.get "/link_foursquare", (req, res) ->
@@ -80,7 +86,7 @@ module.exports = (app) ->
       udata: req.session.user
 
 
-  app.post "/login", (req, res) ->
+  app.post "/account", (req, res) ->
     unless req.param("user") is `undefined`
       AM.updateAccount
         user: req.param("user")
@@ -103,11 +109,6 @@ module.exports = (app) ->
 
           res.send "ok", 200
 
-    else if req.param("logout") is "true"
-      res.clearCookie "user"
-      res.clearCookie "pass"
-      req.session.destroy (e) ->
-        res.send "ok", 200
 
   # logged-in user homepage
   app.get "/account", (req, res) ->

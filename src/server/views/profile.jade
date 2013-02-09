@@ -32,7 +32,7 @@ block content
 			- }
 			- for(i = 0; i < numbertodisplay; i++) {
 			-	checkin = checkins[i];
-				li: #{checkin.venue.name} near #{checkin.venue.location.city} saying #{checkin.shout}
+				li #{checkin.venue.name} near #{checkin.venue.location.city} saying #{checkin.shout}
 			- }
 
 	include modals/alert
