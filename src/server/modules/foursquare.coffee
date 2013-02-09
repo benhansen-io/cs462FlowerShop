@@ -41,7 +41,7 @@ module.exports.routes = (app) ->
               req.session.user.foursquare_access_token = access_token
             else
               console.log "Trying to add access_token to non-existent user"
-            res.redirect "/home"
+            res.redirect "/"
 
 additional_params =
   "redirect_uri": site_url + "/foursquare_rd"
