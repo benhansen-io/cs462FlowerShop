@@ -20,12 +20,13 @@ block content
 
 
 	#container
-		if typeof(udata) != "undefined" && profileuser.user === udata.user
+                - var lookingAtOwnProfile = typeof(udata) != "undefined" && profileuser.user === udata.user
+		if lookingAtOwnProfile
 			h2 Your most recent checkin data:
 		else
 			h2 #{profileuser.name}'s most recent checkin:
 		ul#checkins
-			- var numbertodisplay = profileuser.user === udata.user ? 10 : 1
+			- var numbertodisplay = lookingAtOwnProfile ? 10 : 1
 			- for(i = 0; i < numbertodisplay; i++) {
 			- 	checkin = checkins[i];
 				li: #{checkin.venue.name} near #{checkin.venue.location.city} saying #{checkin.shout}
