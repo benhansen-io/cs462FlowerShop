@@ -211,6 +211,16 @@ exports.findByUsername = function(user, callback)
 	});
 };
 
+exports.getDriversWithESL = function(callback)
+{
+	accounts.find({type: "Driver", "esl": {$exists: 1}}).toArray(
+		function(e, res) {
+		if (e) callback(e)
+		else callback(null, res)
+	});
+}
+
+
 var findByMultipleFields = function(a, callback)
 {
 // this takes an array of name/val pairs to search against {fieldName : 'value'} //

@@ -4,6 +4,8 @@
 // store the userId on the client side in a hidden input field //
 input(type='hidden', value= user._id)#userId
 
+- var types = ['FlowerShopOwner', 'Driver'];
+
 #account-form-container
         form( method="post")#account-form.form-horizontal.well.span6
                 h1
@@ -30,6 +32,12 @@ input(type='hidden', value= user._id)#userId
                                 label.control-label(for='user-tf') Username
                                 .controls
                                         input#user-tf.input-xlarge.disabled(type='text', name='user', value= user.user)
+                        #type-cg.control-group
+                                label.control-label(for='type-list') User Type
+                                .controls
+                                        select#type-list(name='type')
+                                                each type in types
+                                                        option(selected=type == user.type)= type
                         #pass-cg.control-group
                                 label.control-label(for='pass-tf') Password
                                 .controls

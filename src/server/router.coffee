@@ -1,38 +1,78 @@
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
 EM = require("./modules/email-dispatcher")
-FS = require("./modules/foursquare")
+ED = require("./modules/external-event-dispatcher")
 module.exports = (app) ->
 
   # main login page
   app.get "/", (req, res) ->
-    AM.getAllActiveRecords (e, records) ->
-      if e?
-        res.send "Error looking up records", 500
-      else if ensureHasSetupFoursquare req, res
-        console.log records
-        res.render "home",
-          title: "FlowerShop"
-          udata: req.session.user
-          users: records
+    if ensureIsSetupUser req, res
+      if req.session.user.type is "Driver"
+        res.redirect "/home-driver"
+      else if req.session.user.type is "FlowerShopOwner"
+        res.redirect "/home-shopowner"
 
-  # main login page
-  app.get "/profile/:user", (req, res) ->
-    user = req.params["user"]
-    AM.findByUsername user, (e, profileuser) ->
-      if e? or !profileuser?
-        res.send "User not found", 400
+  app.get "/home-driver", (req, res) ->
+    if ensureIsSetupUser req, res
+      if req.session.user.type != "Driver"
+        res.send "Not authorized", 400
+      res.render "home-driver",
+        udata: req.session.user
+
+  app.post "/home-driver", (req, res) ->
+    if ensureIsSetupUser req, res
+      if req.param("esl") is `undefined`
+        res.send "missing data", 400
       else
-        FS.getCheckins profileuser.foursquare_access_token, 10, (e, records) ->
-          console.log JSON.stringify records
-          if e?
-            res.send "Error looking up checkins: " + JSON.stringify(e), 500
-          else if ensureHasSetupFoursquare req, res
-            res.render "profile",
-              title: "FlowerShop"
-              udata: req.session.user
-              profileuser: profileuser
-              checkins: records
+        AM.addToAccount req.session.user.user,
+          esl: req.param("esl"),
+        , (e, o) ->
+          if e
+            res.send "error-updating type", 400
+          else
+            req.session.user.esl = req.param("esl")
+            res.redirect "/home-driver"
+
+  app.get "/home-shopowner", (req, res) ->
+    if ensureIsSetupUser req, res
+      res.render "home-shopowner",
+        udata: req.session.user
+
+  app.post "/home-shopowner", (req, res) ->
+    if ensureIsSetupUser req, res
+      if req.param("location") is `undefined`
+        res.send "missing data", 400
+      else
+        AM.addToAccount req.session.user.user,
+          location: req.param("location"),
+        , (e, o) ->
+          if e
+            res.send "error-updating type", 400
+          else
+            req.session.user.location = req.param("location")
+            res.redirect "/home-shopowner"
+
+  app.post "/delivery-request", (req, res) ->
+    if ensureIsSetupUser req, res
+      if req.param("pickup-time") is `undefined` or
+      req.param("delivery-location") is `undefined` or
+      not req.session.user.location?
+        res.send "missing data, make sure you have set a shop location", 400
+      else
+        eventData =
+          _domain: "rfq"
+          _name: "delivery_ready"
+          shopAddress: req.session.user.location
+          pickupTime: req.param "pickup-time" or "now"
+          deliveryAddress: req.param "delivery-location"
+          deliveryTime: req.param "delivery-time" or ""
+
+        AM.getDriversWithESL (error, driversArray) ->
+          if error?
+            res.send error, 500
+          for driver in driversArray
+            ED.sendEvent driver.esl, eventData
+        res.redirect "/home-shopowner"
 
   # main login page
   app.get "/login", (req, res) ->
@@ -78,14 +118,6 @@ module.exports = (app) ->
       req.session.destroy (e) ->
         res.send "ok", 200
 
-  # apps main page
-  app.get "/link_foursquare", (req, res) ->
-    res.render "link_foursquare",
-      title: "Link Foursquare Account"
-      foursquare_url: FS.authorizeUrl
-      udata: req.session.user
-
-
   app.post "/account", (req, res) ->
     unless req.param("user") is `undefined`
       AM.updateAccount
@@ -94,6 +126,7 @@ module.exports = (app) ->
         email: req.param("email")
         country: req.param("country")
         pass: req.param("pass")
+        type: req.param("type")
       , (e, o) ->
         if e
           res.send "error-updating-account", 400
@@ -137,6 +170,7 @@ module.exports = (app) ->
       user: req.param("user")
       pass: req.param("pass")
       country: req.param("country")
+      type: req.param("type")
     , (e) ->
       if e
         res.send e, 400
@@ -215,8 +249,6 @@ module.exports = (app) ->
     AM.delAllRecords ->
       res.redirect "/print"
 
-  FS.routes(app)
-
   app.get "*", (req, res) ->
     res.render "404",
       title: "Page Not Found"
@@ -224,15 +256,7 @@ module.exports = (app) ->
 ensureIsSetupUser = (req, res) ->
   unless req.session.user?
     # if user is not logged-in redirect back to login page
-    res.redirect "/"
+    res.redirect "/login"
+    return false
   else
-    ensureHasSetupFoursquare req, res
-
-ensureHasSetupFoursquare = (req, res) ->
-  if req.session.user?
-    if req.session.user.foursquare_access_token?
-      return true
-    else
-      res.redirect "/link_foursquare"
-  else
-    true
+    return true

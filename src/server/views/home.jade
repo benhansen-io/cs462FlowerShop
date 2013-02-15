@@ -2,29 +2,30 @@
 extends layout
 
 block content
-	div.navbar.navbar-fixed-top
-		div.navbar-inner
-			div.container-fluid
-				ul#global-nav.nav.pull-left
-					a(href='#').brand Flower Shop
-				- if(udata) {
-				button#btn-logout.btn.btn-primary
-					i.icon-lock.icon-white
-					| Logout
-				- } else {
-				button#btn-login-bar.btn.btn-primary
-					i.icon-lock.icon-white
-					| Login
-				- }
+  div.navbar.navbar-fixed-top
+    div.navbar-inner
+      div.container-fluid
+        ul#global-nav.nav.pull-left
+          a(href='#').brand Flower Shop
+        - if(udata) {
+        button#btn-logout.btn.btn-primary
+          i.icon-lock.icon-white
+          | Logout
+        - } else {
+        button#btn-login-bar.btn.btn-primary
+          i.icon-lock.icon-white
+          | Login
+        - }
 
-	#container
-		h2 Active users on this site:
-		ul#users
-			each user in users
-				li: a(href='/profile/' + user.user) #{user.name}
+  #container
+    .form-container
+      form.form-horizontal.well.span6
+        fieldset
+          label For general account info (name, password...) visit your <a href="/account">account page</a>.
+    block homecontent
 
 
 
 
-	include modals/alert
-	include modals/confirm
+  include modals/alert
+  include modals/confirm
