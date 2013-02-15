@@ -1,0 +1,40 @@
+
+extends home
+
+block homecontent
+  - var user = typeof(udata) != 'undefined' ? udata : { }
+  .form-container
+    form( method="post")#owner-form.form-horizontal.well.span6
+      h1
+      p#sub1.subheading Owner Specific Info
+      hr
+      fieldset
+        #flower-shop-location-cg.control-group
+          label.control-label(for='name-tf') Store Location
+          .controls
+            input#flower-shop-location-tf.input-xlarge(type='text', name='location', value= user.location)
+        .form-actions
+          button(type='submit')#account-form-btn2.btn Update
+
+
+
+  .form-container
+    form( method="post", action="/delivery-request")#owner-form.form-horizontal.well.span6
+      h1
+      p#sub1.subheading Delivery Request
+      hr
+      fieldset
+        #pickup-time-cg.control-group
+          label.control-label(for='name-tf') Pickup Time
+          .controls
+            input#pickup-time-tf.input-xlarge(type='text', name='pickup-time')
+        #delivery-location-cg.control-group
+          label.control-label(for='name-tf') Deliver Location
+          .controls
+            input#delivery-location-tf.input-xlarge(type='text', name='delivery-location')
+        #delivery-time-cg.control-group
+          label.control-label(for='name-tf') Deliver Time
+          .controls
+            input#delivery-time-tf.input-xlarge(type='text', name='delivery-time')
+        .form-actions
+          button(type='submit')#account-form-btn2.btn Submit
