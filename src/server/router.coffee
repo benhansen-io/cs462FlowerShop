@@ -1,9 +1,11 @@
+crypto = require('crypto')
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
-module.exports = (app) ->
+uniqueid = require("./modules/uniqueid")
 
+module.exports = (app) ->
   # main login page
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
@@ -16,6 +18,16 @@ module.exports = (app) ->
     if ensureIsSetupUser req, res
       if req.session.user.type != "Driver"
         res.send "Not authorized", 400
+      if not req.session.user.callbackESLID?
+        id = uniqueid.generateUniqueId()
+        AM.addToAccount req.session.user.user,
+          callbackESLID: id,
+        , (e, o) ->
+          if e
+            res.send "error-updating type", 400
+          else
+            req.session.user.callbackESLID = id
+
       res.render "home-driver",
         udata: req.session.user
 
@@ -59,6 +71,7 @@ module.exports = (app) ->
       not req.session.user.location?
         res.send "missing data, make sure you have set a shop location", 400
       else
+        uniqueID = uniqueid.generateUniqueId()
         eventData =
           _domain: "rfq"
           _name: "delivery_ready"
@@ -66,6 +79,7 @@ module.exports = (app) ->
           pickupTime: req.param "pickup-time" or "now"
           deliveryAddress: req.param "delivery-location"
           deliveryTime: req.param "delivery-time" or ""
+          requestID: uniqueID
 
         AM.getDriversWithESL (error, driversArray) ->
           if error?
@@ -73,6 +87,9 @@ module.exports = (app) ->
           for driver in driversArray
             ED.sendEvent driver.esl, eventData
         res.redirect "/home-shopowner"
+
+  app.post "/driverESL/:id", (req, res) ->
+    req.params.id
 
   # main login page
   app.get "/login", (req, res) ->

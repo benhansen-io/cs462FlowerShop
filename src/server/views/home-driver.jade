@@ -1,6 +1,4 @@
-
 extends home
-
 
 block homecontent
   - var user = typeof(udata) != 'undefined' ? udata : { }
@@ -11,8 +9,12 @@ block homecontent
       hr
       fieldset
         #name-cg.control-group
-          label.control-label(for='name-tf') Event Signal URL (ESL)
+          label.control-label(for='esl-tf') Event Signal URL (ESL)
           .controls
             input#esl-tf.input-xlarge(type='text', name='esl', value= user.esl)
+          label.control-label(for='driverESLID-tf') Callback ESL
+          .controls
+            input#esl-tf.input-xlarge(type='text', name='esl', value= user.esl, disabled)
+              | http://thissitescurrentip/driverESL/#{ user.callbackESLID}
         .form-actions
           button(type='submit')#account-form-btn2.btn Submit
