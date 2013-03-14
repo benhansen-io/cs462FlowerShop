@@ -111,6 +111,8 @@ module.exports = (app) ->
               res.send e, 500
             else
               res.send "Bid recorded", 200
+        else
+          res.send "unknown event", 400
 
   # main login page
   app.get "/login", (req, res) ->

@@ -25,14 +25,14 @@ exports.addBid = (deliveryID, driverName, deliveryTime, callback) ->
     deliveryID: deliveryID
     driverName: driverName
     deliveryTime: deliveryTime
-  bid.insert(newData, {safe: true}, callback);
+  bids.insert(newData, {safe: true}, callback);
 
 exports.getDeliveryIDs = (callback) ->
-  accounts.distinct('deliveryID').toArray (e, res) ->
+  bids.distinct('deliveryID').toArray (e, res) ->
     if (e) callback(e)
     else callback(null, res)
 
 exports.getBidsByDeliveryID = (deliveryID, callback) ->
-  accounts.find({deliveryID: deliveryID}).toArray (e, res) ->
+  bids.find({deliveryID: deliveryID}).toArray (e, res) ->
     if (e) callback(e)
     else callback(null, res)
