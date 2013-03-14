@@ -28,7 +28,7 @@ exports.addBid = (deliveryID, driverName, deliveryTime, callback) ->
   bids.insert(newData, {safe: true}, callback);
 
 exports.getDeliveryIDs = (callback) ->
-  bids.distinct('deliveryID').toArray (e, res) ->
+  bids.distinct 'deliveryID', (e, res) ->
     if (e) callback(e)
     else callback(null, res)
 
