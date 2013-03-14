@@ -56,9 +56,9 @@ module.exports = (app) ->
         for id in ids
           BM.getBidsByDeliveryID id, (e, bids) ->
             bidsObj.id = bids
-      res.render "home-shopowner",
-        udata: req.session.user
-        bidsByDeliveryID: bidsObj
+        res.render "home-shopowner",
+          udata: req.session.user
+          bidsByDeliveryID: bidsObj
 
   app.post "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
