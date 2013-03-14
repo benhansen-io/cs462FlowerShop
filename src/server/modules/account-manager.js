@@ -222,11 +222,11 @@ exports.getDriversWithESL = function(callback)
 
 exports.getDriverWithCallbackESLID = function(callbackESLID, callback)
 {
-	accounts.findOne({type: "Driver", "callbackESL": callbackESLID}).toArray(
-		function(e, res) {
-		if (e) callback(e)
-		else callback(null, res)
-	});
+	accounts.findOne({type: "Driver", "callbackESL": callbackESLID},
+          function(e, res) {
+            if (e) callback(e)
+            else callback(null, res)
+          });
 }
 
 var findByMultipleFields = function(a, callback)
