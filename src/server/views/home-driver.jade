@@ -12,9 +12,9 @@ block homecontent
           label.control-label(for='esl-tf') Event Signal URL (ESL)
           .controls
             input#esl-tf.input-xlarge(type='text', name='esl', value= user.esl)
+          br
           label.control-label(for='driverESLID-tf') Callback ESL
           .controls
-            input#esl-tf.input-xlarge(type='text', name='esl', value= user.esl, disabled)
-              | http://thissitescurrentip/driverESL/#{ user.callbackESLID}
+            input#driveresl-tf.input-xlarge(type='text', name='driveresl', value= "{{thissitescurrentip}}/driverESL/" + user.callbackESLID, disabled)
         .form-actions
           button(type='submit')#account-form-btn2.btn Submit

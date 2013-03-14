@@ -26,10 +26,13 @@ module.exports = (app) ->
           if e
             res.send "error-updating type", 400
           else
+            console.log "added callbackESLID:" + id
             req.session.user.callbackESLID = id
-
-      res.render "home-driver",
-        udata: req.session.user
+            res.render "home-driver",
+              udata: req.session.user
+      else
+        res.render "home-driver",
+          udata: req.session.user
 
   app.post "/home-driver", (req, res) ->
     if ensureIsSetupUser req, res
