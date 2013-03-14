@@ -38,3 +38,11 @@ block homecontent
             input#delivery-time-tf.input-xlarge(type='text', name='delivery-time')
         .form-actions
           button(type='submit')#account-form-btn2.btn Submit
+  .form-container
+    h1 Bids Received
+    each deliveryID, bids in bidsByDeliverID
+      fieldset
+        .subheading Delivery: #{deliveryID}
+        each bid in bids
+          div #{bid.driverName} in #{bid.deliveryTime}
+

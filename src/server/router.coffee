@@ -1,6 +1,7 @@
 crypto = require('crypto')
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
+BM = require("./modules/bid-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 uniqueid = require("./modules/uniqueid")
@@ -50,8 +51,14 @@ module.exports = (app) ->
 
   app.get "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
+      BM.getDeliveryIDs (e, ids) ->
+        bidsObj = {}
+        for id in ids
+          BM.getBidsByDeliveryID id, (e, bids) ->
+            bidsObj.id = bids
       res.render "home-shopowner",
         udata: req.session.user
+        bids: bidsObj
 
   app.post "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
@@ -84,15 +91,26 @@ module.exports = (app) ->
           deliveryTime: req.param "delivery-time" or ""
           requestID: uniqueID
 
-        AM.getDriversWithESL (error, driversArray) ->
+        am.getdriverswithesl (error, driversarray) ->
           if error?
             res.send error, 500
-          for driver in driversArray
-            ED.sendEvent driver.esl, eventData
+          for driver in driversarray
+            ed.sendevent driver.esl, eventdata
         res.redirect "/home-shopowner"
 
   app.post "/driverESL/:id", (req, res) ->
-    req.params.id
+    callbackESLID = req.params.id
+    AM.getDriverWithCallbackESLID(callbackESLID, (e, driver) ->
+      if e?
+        res.send e, 500
+      else
+        event = req.body
+        if event._domain is "rfq" and event._name is "bid_available"
+          BM.addBid event.deliveryID, event.driverName, event.deliveryTime, (e) ->
+            if e?
+              res.send e, 500
+            else
+              res.send "Bid recorded", 200
 
   # main login page
   app.get "/login", (req, res) ->
