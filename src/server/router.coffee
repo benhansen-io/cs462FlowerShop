@@ -52,13 +52,16 @@ module.exports = (app) ->
   app.get "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
       BM.getDeliveryIDs (e, ids) ->
-        bidsObj = {}
-        for id in ids
-          BM.getBidsByDeliveryID id, (e, bids) ->
-            bidsObj.id = bids
-        res.render "home-shopowner",
-          udata: req.session.user
-          bidsByDeliveryID: bidsObj
+        if e?
+          send e, 500
+        else
+          bidsObj = {}
+          for id in ids
+            BM.getBidsByDeliveryID id, (e, bids) ->
+              bidsObj.id = bids
+          res.render "home-shopowner",
+            udata: req.session.user
+            bidsByDeliveryID: bidsObj
 
   app.post "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
