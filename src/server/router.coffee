@@ -58,7 +58,7 @@ module.exports = (app) ->
             bidsObj.id = bids
       res.render "home-shopowner",
         udata: req.session.user
-        bids: bidsObj
+        bidsByDeliveryID: bidsObj
 
   app.post "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
@@ -100,7 +100,7 @@ module.exports = (app) ->
 
   app.post "/driverESL/:id", (req, res) ->
     callbackESLID = req.params.id
-    AM.getDriverWithCallbackESLID(callbackESLID, (e, driver) ->
+    AM.getDriverWithCallbackESLID callbackESLID, (e, driver) ->
       if e?
         res.send e, 500
       else
