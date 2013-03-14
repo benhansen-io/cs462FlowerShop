@@ -51,14 +51,18 @@ module.exports = (app) ->
 
   app.get "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
+      console.log "Displaying owner"
       BM.getDeliveryIDs (e, ids) ->
         if e?
-          send e, 500
+          res.send e, 500
         else
           bidsObj = {}
+          console.log "Got ids: " + JSON.stringify(ids)
           for id in ids
             BM.getBidsByDeliveryID id, (e, bids) ->
+              console.log "Got bids: " + JSON.stringify(bids)
               bidsObj.id = bids
+          console.log "Rendering page"
           res.render "home-shopowner",
             udata: req.session.user
             bidsByDeliveryID: bidsObj
