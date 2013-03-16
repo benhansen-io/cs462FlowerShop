@@ -29,8 +29,11 @@ exports.addBid = (deliveryID, driverName, deliveryTime, callback) ->
 
 exports.getDeliveryIDs = (callback) ->
   bids.distinct 'deliveryID', (e, res) ->
-    if (e) callback(e)
-    else callback(null, res)
+    if e?
+      callback(e)
+    else
+      console.log "Got distinct ids from db: " + res
+      callback(null, res)
 
 exports.getBidsByDeliveryID = (deliveryID, callback) ->
   bids.find({deliveryID: deliveryID}).toArray (e, res) ->

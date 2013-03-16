@@ -55,6 +55,8 @@ module.exports = (app) ->
       BM.getDeliveryIDs (e, ids) ->
         if e?
           res.send e, 500
+        else if not ids?
+          res.send "Received unexpected null from getDeliveryIDs", 500
         else
           bidsObj = {}
           console.log "Got ids: " + JSON.stringify(ids)
