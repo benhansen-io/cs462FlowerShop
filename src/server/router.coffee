@@ -11,13 +11,6 @@ module.exports = (app) ->
   # main login page
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
-      if req.session.user.type is "Driver"
-        res.redirect "/home-driver"
-      else if req.session.user.type is "FlowerShopOwner"
-        res.redirect "/home-shopowner"
-
-  app.get "/home-driver", (req, res) ->
-    if ensureIsSetupUser req, res
       if req.session.user.type != "Driver"
         res.send "Not authorized", 400
       if not req.session.user.callbackESLID?
@@ -36,7 +29,7 @@ module.exports = (app) ->
         res.render "home-driver",
           udata: req.session.user
 
-  app.post "/home-driver", (req, res) ->
+  app.post "/", (req, res) ->
     if ensureIsSetupUser req, res
       if req.param("esl") is `undefined`
         res.send "missing data", 400
@@ -48,76 +41,8 @@ module.exports = (app) ->
             res.send "error-updating type", 400
           else
             req.session.user.esl = req.param("esl")
-            res.redirect "/home-driver"
 
-  app.get "/home-shopowner", (req, res) ->
-    if ensureIsSetupUser req, res
-      BM.getDeliveryIDs (e, ids) ->
-        if e?
-          res.send e, 500
-        else if not ids?
-          res.send "Received unexpected null from getDeliveryIDs", 500
-        else
-          bidsObj = {}
-          async.map ids, (id, c) ->
-            BM.getBidsByDeliveryID id, (e, bids) ->
-              if e?
-                console.log "Failed to get bids for deliveryID: " + id
-                res.send "Failed to get bids for deliveryID: " + id, 500
-                c e
-              else
-                console.log "Adding bids to bidsObj: " + JSON.stringify(bids)
-                bidsObj[id] = bids
-                c null
-          , (e, unused) ->
-            if e?
-              console.log "Error collecting bids: " + e
-              res.send "Error collecting bids: " + e
-            else
-              console.log "bidsByDeliveryID: " + JSON.stringify(bidsObj)
-              res.render "home-shopowner",
-                udata: req.session.user
-                bidsByDeliveryID: bidsObj
-
-  app.post "/home-shopowner", (req, res) ->
-    if ensureIsSetupUser req, res
-      if req.param("location") is `undefined`
-        res.send "missing data", 400
-      else
-        AM.addToAccount req.session.user.user,
-          location: req.param("location"),
-        , (e, o) ->
-          if e
-            res.send "error-updating type", 400
-          else
-            req.session.user.location = req.param("location")
-            res.redirect "/home-shopowner"
-
-  app.post "/delivery-request", (req, res) ->
-    if ensureIsSetupUser req, res
-      if req.param("pickup-time") is `undefined` or
-      req.param("delivery-location") is `undefined` or
-      not req.session.user.location?
-        res.send "missing data, make sure you have set a shop location", 400
-      else
-        uniqueID = uniqueid.generateUniqueId()
-        eventData =
-          _domain: "rfq"
-          _name: "delivery_ready"
-          shopAddress: req.session.user.location
-          pickupTime: req.param "pickup-time" or "now"
-          deliveryAddress: req.param "delivery-location"
-          deliveryTime: req.param "delivery-time" or ""
-          requestID: uniqueID
-
-        am.getdriverswithesl (error, driversarray) ->
-          if error?
-            res.send error, 500
-          for driver in driversarray
-            ed.sendevent driver.esl, eventdata
-        res.redirect "/home-shopowner"
-
-  app.post "/driverESL/:id", (req, res) ->
+  app.post "/shopESL/:id", (req, res) ->
     callbackESLID = req.params.id
     AM.getDriverWithCallbackESLID callbackESLID, (e, driver) ->
       if e?
@@ -185,7 +110,6 @@ module.exports = (app) ->
         email: req.param("email")
         country: req.param("country")
         pass: req.param("pass")
-        type: req.param("type")
       , (e, o) ->
         if e
           res.send "error-updating-account", 400
@@ -229,7 +153,6 @@ module.exports = (app) ->
       user: req.param("user")
       pass: req.param("pass")
       country: req.param("country")
-      type: req.param("type")
     , (e) ->
       if e
         res.send e, 400
