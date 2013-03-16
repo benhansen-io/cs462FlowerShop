@@ -37,3 +37,10 @@ exports.getStoresForDriver = (driverUser, callback) ->
       callback(e)
     else
       callback(null, res)
+
+exports.getStoreByESLID = (ESLID, callback) ->
+  stores.find({callbackESLID: ESLID}).toArray (e, res) ->
+    if e?
+      callback(e)
+    else
+      callback(null, res)

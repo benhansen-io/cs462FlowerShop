@@ -16,7 +16,7 @@ module.exports = (app) ->
           stores: stores
           udata: req.session.user
 
-  app.post "/", (req, res) ->
+  app.post "/add-store", (req, res) ->
     if ensureIsSetupUser req, res
       if req.param("name") is `undefined`
         res.send "missing data", 400
@@ -29,17 +29,13 @@ module.exports = (app) ->
 
   app.post "/storeESL/:id", (req, res) ->
     callbackESLID = req.params.id
-    AM.getDriverWithCallbackESLID callbackESLID, (e, driver) ->
+    SM.getStoreByESLID callbackESLID, (e, driver) ->
       if e?
         res.send e, 500
       else
         event = req.body
-        if event._domain is "rfq" and event._name is "bid_available"
-          BM.addBid event.deliveryID, event.driverName, event.deliveryTime, (e) ->
-            if e?
-              res.send e, 500
-            else
-              res.send "Bid recorded", 200
+        if event._domain is "rfq" and event._name is "delivery_ready"
+          res.send "Processed event", 200
         else
           res.send "unknown event", 400
 
