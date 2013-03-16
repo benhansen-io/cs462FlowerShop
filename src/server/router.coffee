@@ -2,13 +2,13 @@ crypto = require('crypto')
 async = require('async')
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
-BM = require("./modules/bid-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 uniqueid = require("./modules/uniqueid")
 
 module.exports = (app) ->
-  # main login page
+  console.log "registering urls"
+
   app.get "/", (req, res) ->
     console.log "received / request"
     if ensureIsSetupUser req, res
