@@ -32,8 +32,4 @@ securePort = 8003
 http.createServer(app).listen(port);
 https.createServer({key: privateKey, cert: certificate}, app).listen(securePort)
 
-app.get "/", (req, res) ->
-  res.send 'Ben Hansen'
-
-
 console.log('Listening on ports: ' + port + ', and ' + securePort)
