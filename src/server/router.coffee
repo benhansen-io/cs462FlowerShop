@@ -5,7 +5,7 @@ AM = require("./modules/account-manager")
 SM = require("./modules/stores-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
-uniqueid = require("./modules/uniqueid")
+uniqueid = require("./uniqueid")
 
 module.exports = (app) ->
 
