@@ -60,7 +60,12 @@ module.exports = (app) ->
           bidsObj = {}
           for id in ids
             BM.getBidsByDeliveryID id, (e, bids) ->
-              bidsObj.id = bids
+              if e?
+                console.log "Failed to get bids for deliveryID: " + id
+                res.send "Failed to get bids for deliveryID: " + id, 500
+              else
+                console.log "Adding bids to bidsObj: " + JSON.stringify(bids)
+                bidsObj.id = bids
           console.log "bidsByDeliveryID: " + JSON.stringify(bidsObj)
           res.render "home-shopowner",
             udata: req.session.user
