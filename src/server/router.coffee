@@ -51,7 +51,6 @@ module.exports = (app) ->
 
   app.get "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
-      console.log "Displaying owner"
       BM.getDeliveryIDs (e, ids) ->
         if e?
           res.send e, 500
@@ -59,12 +58,10 @@ module.exports = (app) ->
           res.send "Received unexpected null from getDeliveryIDs", 500
         else
           bidsObj = {}
-          console.log "Got ids: " + JSON.stringify(ids)
           for id in ids
             BM.getBidsByDeliveryID id, (e, bids) ->
-              console.log "Got bids: " + JSON.stringify(bids)
               bidsObj.id = bids
-          console.log "Rendering page"
+          console.log "bidsByDeliveryID: " + JSON.stringify(bidsObj)
           res.render "home-shopowner",
             udata: req.session.user
             bidsByDeliveryID: bidsObj
