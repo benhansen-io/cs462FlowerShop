@@ -2,34 +2,32 @@ crypto = require('crypto')
 async = require('async')
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
+SM = require("./modules/stores-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 uniqueid = require("./modules/uniqueid")
 
 module.exports = (app) ->
-  console.log "registering urls"
 
   app.get "/", (req, res) ->
-    console.log "received / request"
     if ensureIsSetupUser req, res
-      console.log "sending page home"
-      res.render "home",
-        udata: req.session.user
+      SM.getStoresForDriver req.session.user.user, (e, stores) ->
+        res.render "home",
+          stores: stores
+          udata: req.session.user
 
   app.post "/", (req, res) ->
     if ensureIsSetupUser req, res
-      if req.param("esl") is `undefined`
+      if req.param("name") is `undefined`
         res.send "missing data", 400
       else
-        AM.addToAccount req.session.user.user,
-          esl: req.param("esl"),
-        , (e, o) ->
+        SM.addStore rea.session.user.user, req.param("name"), {lat: req.param("lat"), long: req.param("long")}, (e, o) ->
           if e
-            res.send "error-updating type", 400
+            res.send "error adding store", 400
           else
-            req.session.user.esl = req.param("esl")
+            res.redirect "/"
 
-  app.post "/shopESL/:id", (req, res) ->
+  app.post "/storeESL/:id", (req, res) ->
     callbackESLID = req.params.id
     AM.getDriverWithCallbackESLID callbackESLID, (e, driver) ->
       if e?
