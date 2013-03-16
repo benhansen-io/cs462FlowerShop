@@ -27,7 +27,7 @@ block content
         fieldset
           p#sub1.subheading Registered Stores
             each store in stores
-              div %{store.name} at #{store.latLong} with ESL '{{thissiteurl}}/storeESL/#{store.callbackESLID}'
+              div '#{store.name}' at #{store.latLong.lat},#{store.latLong.long} with ESL '{{thissiteurl}}/storeESL/#{store.callbackESLID}'
       form(method="post", action="add-store")#account-form.form-horizontal.well.span6
         fieldset
           p#sub1.subheading Add new store
