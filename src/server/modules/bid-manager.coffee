@@ -32,10 +32,11 @@ exports.getDeliveryIDs = (callback) ->
     if e?
       callback(e)
     else
-      console.log "Got distinct ids from db: " + res
       callback(null, res)
 
 exports.getBidsByDeliveryID = (deliveryID, callback) ->
   bids.find({deliveryID: deliveryID}).toArray (e, res) ->
-    if (e) callback(e)
-    else callback(null, res)
+    if e?
+      callback(e)
+    else
+      callback(null, res)
