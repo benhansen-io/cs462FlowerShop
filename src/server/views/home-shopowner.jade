@@ -40,7 +40,7 @@ block homecontent
           button(type='submit')#account-form-btn2.btn Submit
   .form-container
     h1 Bids Received
-    each deliveryID, bids in bidsByDeliveryID
+    each bids, deliveryID in bidsByDeliveryID
       fieldset
         .subheading Delivery: #{deliveryID}
         each bid in bids
