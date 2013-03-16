@@ -5,7 +5,7 @@ dbPort = 27017
 dbHost = "localhost"
 dbName = "node-login"
 
-uniqueid = require('uniqueid')
+uniqueid = require('./modules/uniqueid')
 
 # establish the database connection 
 db = new MongoDB(dbName, new Server(dbHost, dbPort,
