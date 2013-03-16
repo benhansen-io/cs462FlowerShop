@@ -21,7 +21,7 @@ module.exports = (app) ->
       if req.param("name") is `undefined`
         res.send "missing data", 400
       else
-        SM.addStore res.session.user.user, req.param("name"), {lat: req.param("lat"), long: req.param("long")}, (e, o) ->
+        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), long: req.param("long")}, (e, o) ->
           if e
             res.send "error adding store", 400
           else
