@@ -64,13 +64,15 @@ module.exports = (app) ->
               if e?
                 console.log "Failed to get bids for deliveryID: " + id
                 res.send "Failed to get bids for deliveryID: " + id, 500
-                c(e)
+                c e
               else
                 console.log "Adding bids to bidsObj: " + JSON.stringify(bids)
                 bidsObj.id = bids
+                c null
           , (e, unused) ->
             if e?
-              console.log "Error collecting bids: " + JSON.stringify(bids)
+              console.log "Error collecting bids: " + e
+              res.send "Error collecting bids: " + e
             else
               console.log "bidsByDeliveryID: " + JSON.stringify(bidsObj)
               res.render "home-shopowner",
