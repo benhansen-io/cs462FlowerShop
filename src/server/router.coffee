@@ -11,23 +11,8 @@ module.exports = (app) ->
   # main login page
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
-      if req.session.user.type != "Driver"
-        res.send "Not authorized", 400
-      if not req.session.user.callbackESLID?
-        id = uniqueid.generateUniqueId()
-        AM.addToAccount req.session.user.user,
-          callbackESLID: id,
-        , (e, o) ->
-          if e
-            res.send "error-updating type", 400
-          else
-            console.log "added callbackESLID:" + id
-            req.session.user.callbackESLID = id
-            res.render "home-driver",
-              udata: req.session.user
-      else
-        res.render "home-driver",
-          udata: req.session.user
+      res.render "home",
+        udata: req.session.user
 
   app.post "/", (req, res) ->
     if ensureIsSetupUser req, res
