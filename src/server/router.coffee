@@ -10,7 +10,9 @@ uniqueid = require("./modules/uniqueid")
 module.exports = (app) ->
   # main login page
   app.get "/", (req, res) ->
+    console.log "received / request"
     if ensureIsSetupUser req, res
+      console.log "sending page home"
       res.render "home",
         udata: req.session.user
 
