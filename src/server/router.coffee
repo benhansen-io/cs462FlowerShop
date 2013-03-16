@@ -67,7 +67,7 @@ module.exports = (app) ->
                 c e
               else
                 console.log "Adding bids to bidsObj: " + JSON.stringify(bids)
-                bidsObj.id = bids
+                bidsObj[id] = bids
                 c null
           , (e, unused) ->
             if e?
