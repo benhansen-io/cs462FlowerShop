@@ -10,6 +10,7 @@
     "mongodb": "1.2.7",
     "moment" : "1.7.2",
     "emailjs": "0.3.3",
-    "oauth" : "0.9.x"
+    "oauth" : "0.9.x",
+    "async" : "0.2.x"
   }
 }

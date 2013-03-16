@@ -1,4 +1,5 @@
 crypto = require('crypto')
+async = require('async')
 CT = require("./modules/country-list")
 AM = require("./modules/account-manager")
 BM = require("./modules/bid-manager")
@@ -58,18 +59,23 @@ module.exports = (app) ->
           res.send "Received unexpected null from getDeliveryIDs", 500
         else
           bidsObj = {}
-          for id in ids
+          async.map ids, (id, c) ->
             BM.getBidsByDeliveryID id, (e, bids) ->
               if e?
                 console.log "Failed to get bids for deliveryID: " + id
                 res.send "Failed to get bids for deliveryID: " + id, 500
+                c(e)
               else
                 console.log "Adding bids to bidsObj: " + JSON.stringify(bids)
                 bidsObj.id = bids
-          console.log "bidsByDeliveryID: " + JSON.stringify(bidsObj)
-          res.render "home-shopowner",
-            udata: req.session.user
-            bidsByDeliveryID: bidsObj
+          , (e, unused) ->
+            if e?
+              console.log "Error collecting bids: " + JSON.stringify(bids)
+            else
+              console.log "bidsByDeliveryID: " + JSON.stringify(bidsObj)
+              res.render "home-shopowner",
+                udata: req.session.user
+                bidsByDeliveryID: bidsObj
 
   app.post "/home-shopowner", (req, res) ->
     if ensureIsSetupUser req, res
