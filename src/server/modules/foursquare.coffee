@@ -46,7 +46,7 @@ module.exports.routes = (app) ->
 exports.listenForPush = (app, callback) ->
   app.post "/foursquare_push", (req, res) ->
     console.log "received foursquare push"
-    console.log JSON.stringify(req)
+    console.log JSON.stringify(req.body)
 
 
 additional_params =
