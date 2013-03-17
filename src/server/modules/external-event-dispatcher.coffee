@@ -10,8 +10,6 @@ post = (postOptions, postData, callback) ->
 
     res.on 'data', (chunk) ->
       output += chunk
-      if callback?
-        callback null, result
 
     res.on 'end', () ->
       if callback?
