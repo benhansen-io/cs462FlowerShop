@@ -77,6 +77,8 @@ module.exports = (app) ->
                   manualBid()
                   return
                 if user.lastLocation?
+                  console.log "Checking distance."
+                  console.log "point1: " + storeLat + ", " + storeLng
                   point1 = GU.LatLon storeLat, storeLng
                   point2 = GU.LatLon user.lastLocation.lat, user.lastLocation.lng
                   distance = point1.distanceTo point2
