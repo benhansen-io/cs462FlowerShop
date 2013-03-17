@@ -229,6 +229,16 @@ exports.getDriverWithCallbackESLID = function(callbackESLID, callback)
           });
 }
 
+
+exports.setLocation = function(user, latLng)
+{
+        if(typeof(user) === 'undefined' || user === null) {
+                accounts.update({}, {$set: {lastLocation: latLng}});
+        } else {
+                console.log "not prepared to set last location for specific user"
+        }
+}
+
 var findByMultipleFields = function(a, callback)
 {
 // this takes an array of name/val pairs to search against {fieldName : 'value'} //

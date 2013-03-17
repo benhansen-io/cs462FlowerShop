@@ -47,7 +47,7 @@ exports.listenForPush = (app, callback) ->
   app.post "/foursquare_push", (req, res) ->
     console.log "received foursquare push"
     console.log JSON.stringify(req.body)
-
+    callback null, JSON.parse req.body.checkin
 
 additional_params =
   "redirect_uri": site_url + "/foursquare_rd"

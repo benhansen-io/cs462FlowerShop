@@ -13,8 +13,13 @@ module.exports = (app) ->
   FS.routes(app)
 
   FS.listenForPush app, (user, checkinData) ->
+    # too lazy for school project to relate checkin to user so all users will be updated
+    # user is null
     console.log "User " + user + " checked in with:"
     console.log JSON.stringify(checkinData)
+    lat = checkinData.venue.location.lat
+    lng = checkinData.venue.location.lng
+    AM.setLastLocation user, {lat: lat, lng: lng}
 
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
@@ -28,7 +33,7 @@ module.exports = (app) ->
       if req.param("name") is `undefined`
         res.send "missing data", 400
       else
-        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), long: req.param("longitude")}, (e, o) ->
+        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), lng: req.param("longitude")}, (e, o) ->
           if e
             res.send "error adding store", 400
           else
