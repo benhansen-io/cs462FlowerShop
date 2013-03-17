@@ -36,8 +36,9 @@ block content
       form.form-horizontal.well.span6
         fieldset
           p#sub1.subheading Registered Stores
+          ul
             each store in stores
-              div '#{store.name}' at #{store.latLong.lat},#{store.latLong.lng} with ESL '{{thissiteurl}}/storeESL/#{store.callbackESLID}'
+              li '#{store.name}' at #{store.latLong.lat},#{store.latLong.lng} with remote ESL #{store.ESL} and local ESL '{{thissiteurl}}/storeESL/#{store.callbackESLID}'
       form(method="post", action="add-store")#account-form.form-horizontal.well.span6
         fieldset
           p#sub1.subheading Add new store
@@ -54,7 +55,7 @@ block content
             .controls
               input#longitude-tf.input-xlarge(type='text', name='longitude')
           #esl-cg.control-group
-            label.control-label(for='esl-tf') Long
+            label.control-label(for='esl-tf') Store ESL
             .controls
               input#esl-tf.input-xlarge(type='text', name='esl')
           .form-actions
