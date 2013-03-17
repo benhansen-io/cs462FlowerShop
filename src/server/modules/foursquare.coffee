@@ -2,7 +2,7 @@ OAuth2 = require("oauth").OAuth2
 AM = require("./account-manager")
 https = require('https')
 
-site_url = "http://ec2-50-16-175-129.compute-1.amazonaws.com"
+site_url = "https://ec2-50-16-175-129.compute-1.amazonaws.com"
 
 oa = new OAuth2(
   "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
