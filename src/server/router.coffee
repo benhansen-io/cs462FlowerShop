@@ -5,9 +5,12 @@ AM = require("./modules/account-manager")
 SM = require("./modules/stores-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
+FS = require("./modules/foursquare")
 uniqueid = require("./modules/uniqueid")
 
 module.exports = (app) ->
+
+  FS.routes(app)
 
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
@@ -41,6 +44,14 @@ module.exports = (app) ->
             res.send "Processed event", 200
           else
             res.send "unknown event", 400
+
+
+  # apps main page
+  app.get "/link_foursquare", (req, res) ->
+    res.render "link_foursquare",
+      title: "Link Foursquare Account"
+      foursquare_url: FS.authorizeUrl
+      udata: req.session.user
 
   # main login page
   app.get "/login", (req, res) ->
@@ -225,4 +236,13 @@ ensureIsSetupUser = (req, res) ->
     res.redirect "/login"
     return false
   else
-    return true
+    return ensureHasSetupFoursquare(req, res)
+
+ensureHasSetupFoursquare = (req, res) ->
+  if req.session.user?
+    if req.session.user.foursquare_access_token?
+      return true
+    else
+      res.redirect "/link_foursquare"
+  else
+    true
