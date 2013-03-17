@@ -21,7 +21,7 @@ module.exports = (app) ->
       if req.param("name") is `undefined`
         res.send "missing data", 400
       else
-        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), long: req.param("long")}, (e, o) ->
+        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), long: req.param("longitude")}, (e, o) ->
           if e
             res.send "error adding store", 400
           else
@@ -29,15 +29,18 @@ module.exports = (app) ->
 
   app.post "/storeESL/:id", (req, res) ->
     callbackESLID = req.params.id
-    SM.getStoreByESLID callbackESLID, (e, driver) ->
+    SM.getStoreByESLID callbackESLID, (e, store) ->
       if e?
         res.send e, 500
       else
-        event = req.body
-        if event._domain is "rfq" and event._name is "delivery_ready"
-          res.send "Processed event", 200
+        if not store?
+          res.send "No store has this ESL", 400
         else
-          res.send "unknown event", 400
+          event = req.body
+          if event._domain is "rfq" and event._name is "delivery_ready"
+            res.send "Processed event", 200
+          else
+            res.send "unknown event", 400
 
   # main login page
   app.get "/login", (req, res) ->
