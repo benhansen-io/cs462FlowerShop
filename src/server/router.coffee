@@ -12,6 +12,10 @@ module.exports = (app) ->
 
   FS.routes(app)
 
+  FS.listenForPush app, (user, checkinData) ->
+    console.log "User " + user + " checked in with:"
+    console.log JSON.stringify(checkinData)
+
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
       SM.getStoresForDriver req.session.user.user, (e, stores) ->

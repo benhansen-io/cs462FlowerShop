@@ -43,6 +43,12 @@ module.exports.routes = (app) ->
               console.log "Trying to add access_token to non-existent user"
             res.redirect "/"
 
+exports.listenForPush(app, callback) ->
+  app.post "/foursquare_push", (req, res) ->
+    console.log "received foursquare push"
+    console.log JSON.stringify(req)
+
+
 additional_params =
   "redirect_uri": site_url + "/foursquare_rd"
   "response_type": "code"
