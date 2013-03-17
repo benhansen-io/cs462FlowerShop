@@ -7,6 +7,7 @@ EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 FS = require("./modules/foursquare")
 uniqueid = require("./modules/uniqueid")
+GU = require('geoutils')
 
 module.exports = (app) ->
 
@@ -35,9 +36,20 @@ module.exports = (app) ->
       if req.param("name") is `undefined`
         res.send "missing data", 400
       else
-        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), lng: req.param("longitude")}, (e, o) ->
+        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), lng: req.param("longitude")}, req.param("esl"), (e, o) ->
           if e
             res.send "error adding store", 400
+          else
+            res.redirect "/"
+
+  app.post "/update-phone", (req, res) ->
+    if ensureIsSetupUser req, res
+      if req.param("phone") is `undefined`
+        res.send "missing data", 400
+      else
+        AM.updatePhone req.session.user.user, req.param("phone"), (e) ->
+          if e?
+            res.send e, 500
           else
             res.redirect "/"
 
@@ -52,10 +64,42 @@ module.exports = (app) ->
         else
           event = req.body
           if event._domain is "rfq" and event._name is "delivery_ready"
-            res.send "Processed event", 200
+
+            manualBid = () ->
+              console.log "placing manual bid"
+
+
+            storeLat = parseFloat store.latLong.lat
+            storeLng = parseFloat store.latLong.lng
+            if not isNaN(storeLat) and not isNaN(storeLng)
+              AM.findByUsername store.driverUser, (e, user) ->
+                if e?
+                  manualBid()
+                  return
+                if user.lastLocation?
+                  point1 = GU.LatLon storeLat, storeLng
+                  point2 = GU.LatLon user.lastLocation.lat, user.lastLocation.lng
+                  distance = point1.distanceTo point2
+                  console.log "Calculated distance of delivery to be " + distance
+                  if distance * 3.1 / 5 < 5
+                    eventObj =
+                      _domain: "rfq"
+                      _name: "bid_available"
+                      deliveryID: uniqueid.generateUniqueId()
+                      driverName: user.name
+                      deliveryTime: (distance * 2 + 5) + " minutes"
+
+                    ED.sendEvent store.ESL, eventObj, (e) ->
+                      if e?
+                        console.log "Error sending automatic bid response"
+                      else
+                        console.log "Automatic bid response sent successfully"
+                  else
+                    manualBid()
+                    return
+
           else
             res.send "unknown event", 400
-
 
   # apps main page
   app.get "/link_foursquare", (req, res) ->

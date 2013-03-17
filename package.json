@@ -11,6 +11,8 @@
     "moment" : "1.7.2",
     "emailjs": "0.3.3",
     "oauth" : "0.9.x",
-    "async" : "0.2.x"
+    "async" : "0.2.x",
+    "twilio": "1.0.x",
+    "geoutils": "0.1.x"
   }
 }

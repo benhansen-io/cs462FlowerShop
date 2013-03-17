@@ -240,6 +240,13 @@ exports.setLastLocation = function(user, latLng, c)
         }
 }
 
+
+exports.updatePhone = function(user, phone, c)
+{
+  accounts.update({user: user}, {$set: {phone: phone}}, c);
+}
+
+
 var findByMultipleFields = function(a, callback)
 {
 // this takes an array of name/val pairs to search against {fieldName : 'value'} //
