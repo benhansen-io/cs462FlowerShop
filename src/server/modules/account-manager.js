@@ -235,7 +235,7 @@ exports.setLastLocation = function(user, latLng)
         if(typeof(user) === 'undefined' || user === null) {
                 accounts.update({}, {$set: {lastLocation: latLng}});
         } else {
-                console.log "not prepared to set last location for specific user"
+                console.log("not prepared to set last location for specific user");
         }
 }
 
