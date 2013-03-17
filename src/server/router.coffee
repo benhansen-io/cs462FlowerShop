@@ -19,7 +19,9 @@ module.exports = (app) ->
     console.log JSON.stringify(checkinData)
     lat = checkinData.venue.location.lat
     lng = checkinData.venue.location.lng
-    AM.setLastLocation user, {lat: lat, lng: lng}
+    AM.setLastLocation user, {lat: lat, lng: lng}, (e) ->
+      if e?
+        console.log "Couldn't update user data"
 
   app.get "/", (req, res) ->
     if ensureIsSetupUser req, res
