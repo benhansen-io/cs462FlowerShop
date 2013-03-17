@@ -79,8 +79,8 @@ module.exports = (app) ->
                 if user.lastLocation?
                   console.log "Checking distance."
                   console.log "point1: " + storeLat + ", " + storeLng
-                  point1 = GU.LatLon storeLat, storeLng
-                  point2 = GU.LatLon user.lastLocation.lat, user.lastLocation.lng
+                  point1 = new GU.LatLon storeLat, storeLng
+                  point2 = new GU.LatLon user.lastLocation.lat, user.lastLocation.lng
                   distance = point1.distanceTo point2
                   console.log "Calculated distance of delivery to be " + distance
                   if distance * 3.1 / 5 < 5
