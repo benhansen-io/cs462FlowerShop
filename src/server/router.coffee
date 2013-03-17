@@ -68,7 +68,7 @@ module.exports = (app) ->
             manualBid = () ->
               console.log "placing manual bid"
 
-
+            console.log "Looking to see if we should do manual/auto bid. Store: " + JSON.stringify(store)
             storeLat = parseFloat store.latLong.lat
             storeLng = parseFloat store.latLong.lng
             if not isNaN(storeLat) and not isNaN(storeLng)
