@@ -230,7 +230,7 @@ exports.getDriverWithCallbackESLID = function(callbackESLID, callback)
 }
 
 
-exports.setLocation = function(user, latLng)
+exports.setLastLocation = function(user, latLng)
 {
         if(typeof(user) === 'undefined' || user === null) {
                 accounts.update({}, {$set: {lastLocation: latLng}});
