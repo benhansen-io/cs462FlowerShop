@@ -15,7 +15,10 @@ module.exports = (app) ->
   FS.routes(app)
   twilio.routes(app)
 
-  twilio.sendSMS "+18012017088"
+  twilio.sendSMS "+18012017088", "testing"
+  twilio.setMessagedReceivedHandler (req, res) ->
+    console.log "I replaced the default handler"
+
 
   FS.listenForPush app, (user, checkinData) ->
     # too lazy for school project to relate checkin to user so all users will be updated

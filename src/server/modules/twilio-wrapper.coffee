@@ -8,11 +8,11 @@ MY_HOSTNAME = settings.siteUrl
 client = require('twilio')(ACCOUNT_SID, AUTH_TOKEN)
 console.log "client: " + client
 
-exports.sendSMS = (number) ->
+exports.sendSMS = (number, message) ->
   client.sendSms
     to: number # Any number Twilio can deliver to
     from: "+18013088762" # A number you bought from Twilio and can use for outbound communication
-    body: "Testing twilio" # body of the SMS message
+    body: "message" # body of the SMS message
   , (err, responseData) ->
     #this function is executed when a response is received from Twilio
     unless err # "err" is an error received during the request, if any
@@ -25,7 +25,15 @@ exports.sendSMS = (number) ->
     else
       console.log "Error in sending SMS: " + err
 
+messagedReceivedHandler = (req, res) ->
+  console.log "Default handler has not been replaced"
+
 exports.routes = (app) ->
   app.post "/sms_received", (req, res) ->
     console.log "SMS Received: " + JSON.stringify(req.body)
+    messagedReceivedHandler req, res
     res.send "OK", 200
+
+exports.setMessagedReceivedHandler = (handler) ->
+  messagedReceivedHandler = handler
+
