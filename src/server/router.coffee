@@ -80,7 +80,7 @@ module.exports = (app) ->
             manualBid = () ->
               console.log "asking whether should place manual bid"
               twilio.setMessagedReceivedHandler (req, res) ->
-                if req.body.body is "bid anyway"
+                if req.body.Body is "bid anyway"
                   sendBid "40 minutes", (e) ->
                     if e?
                       console.log "Error manual automatic bid response"
@@ -90,9 +90,8 @@ module.exports = (app) ->
                       res.send msg, 200
                 else
                   console.log "received unknown text reply"
-                  console.log "req.body.body: " + req.body.body
+                  console.log "req.body.Body: " + req.body.Body
                   console.log "req.body: " + JSON.stringify(req.body)
-                  res.send "Asking to send manual bid", 200
 
               msg = "Shop address: " + event.shopAddress + "\n" +
                 "Pickup Time: " + event.pickupTime + "\n" +
@@ -100,6 +99,7 @@ module.exports = (app) ->
                 "Delivery Time: " + event.deliveryTime + "\n\n" +
                 "Reply 'bid anyway' to accept."
               twilio.sendSMS "+18012017088", msg
+              res.send "Asking to send manual bid", 200
 
             console.log "Looking to see if we should do manual/auto bid. Store: " + JSON.stringify(store)
             storeLat = parseFloat store.latLong.lat
