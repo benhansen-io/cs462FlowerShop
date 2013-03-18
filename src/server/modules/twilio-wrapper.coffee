@@ -1,5 +1,5 @@
 sys = require('sys')
-settings = require('settings')
+settings = require('./settings')
 
 TwilioClient = require('twilio').Client
 ACCOUNT_SID = "AC14a7fa16c208bbbf43a0fea0752d9c9d"
