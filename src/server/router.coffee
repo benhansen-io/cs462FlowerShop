@@ -7,11 +7,15 @@ EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 FS = require("./modules/foursquare")
 uniqueid = require("./modules/uniqueid")
+twilio = require('./server/modules/twilio-wrapper')
 GU = require('geoutils')
 
 module.exports = (app) ->
 
   FS.routes(app)
+  twilio.routes(app)
+
+  twilio.sendSMS "+18012017088"
 
   FS.listenForPush app, (user, checkinData) ->
     # too lazy for school project to relate checkin to user so all users will be updated
