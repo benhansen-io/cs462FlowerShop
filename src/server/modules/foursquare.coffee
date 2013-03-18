@@ -1,8 +1,7 @@
 OAuth2 = require("oauth").OAuth2
 AM = require("./account-manager")
 https = require('https')
-
-site_url = "https://ec2-50-16-175-129.compute-1.amazonaws.com"
+settings = require('settings')
 
 oa = new OAuth2(
   "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
@@ -21,7 +20,7 @@ module.exports.routes = (app) ->
       else
         additional_params =
           grant_type: "authorization_code",
-          "redirect_uri": site_url + "/foursquare_rd"
+          "redirect_uri": settings.siteUrl + "/foursquare_rd"
 
         oa.getOAuthAccessToken req.param("code"), additional_params, (error, access_token, refresh_token, results) ->
           if error
@@ -50,7 +49,7 @@ exports.listenForPush = (app, callback) ->
     callback null, JSON.parse req.body.checkin
 
 additional_params =
-  "redirect_uri": site_url + "/foursquare_rd"
+  "redirect_uri": settings.siteUrl + "/foursquare_rd"
   "response_type": "code"
 module.exports.authorizeUrl = oa.getAuthorizeUrl additional_params
 

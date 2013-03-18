@@ -96,6 +96,7 @@ module.exports = (app) ->
                         console.log "Error sending automatic bid response"
                       else
                         console.log "Automatic bid response sent successfully"
+                        res.send "Automatic bid response sent successfully", 200
                   else
                     manualBid()
                     return

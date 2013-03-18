@@ -2,6 +2,7 @@ express = require('express')
 fs = require('fs')
 https = require('https')
 http = require('http')
+twilio = require('twilio-wrapper')
 
 privateKey = fs.readFileSync('certs/private-key.pem').toString();
 certificate = fs.readFileSync('certs/cert.pem').toString();
@@ -33,3 +34,5 @@ http.createServer(app).listen(port);
 https.createServer({key: privateKey, cert: certificate}, app).listen(securePort)
 
 console.log('Listening on ports: ' + port + ', and ' + securePort)
+
+twilio.makeCall()
