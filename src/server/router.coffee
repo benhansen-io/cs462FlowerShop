@@ -7,7 +7,7 @@ EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 FS = require("./modules/foursquare")
 uniqueid = require("./modules/uniqueid")
-twilio = require('./server/modules/twilio-wrapper')
+twilio = require('./modules/twilio-wrapper')
 GU = require('geoutils')
 
 module.exports = (app) ->
