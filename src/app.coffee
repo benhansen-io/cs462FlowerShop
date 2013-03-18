@@ -2,7 +2,7 @@ express = require('express')
 fs = require('fs')
 https = require('https')
 http = require('http')
-twilio = require('twilio-wrapper')
+twilio = require('./server/modules/twilio-wrapper')
 
 privateKey = fs.readFileSync('certs/private-key.pem').toString();
 certificate = fs.readFileSync('certs/cert.pem').toString();
