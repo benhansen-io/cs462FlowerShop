@@ -108,7 +108,7 @@ module.exports = (app) ->
           pickupTime: req.param "pickup-time" or "now"
           deliveryAddress: req.param "delivery-location"
           deliveryTime: req.param "delivery-time" or ""
-          requestID: uniqueID
+          id: uniqueID
 
         am.getdriverswithesl (error, driversarray) ->
           if error?
