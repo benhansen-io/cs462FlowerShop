@@ -1,7 +1,7 @@
 OAuth2 = require("oauth").OAuth2
 AM = require("./account-manager")
 https = require('https')
-settings = require('settings')
+settings = require('./settings')
 
 oa = new OAuth2(
   "YUQA4UNMFVOUJ4CLPQ3BYRZMYUI5IUDYDUZG3EMWOZT1NLGG",
