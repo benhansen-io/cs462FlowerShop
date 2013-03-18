@@ -72,7 +72,7 @@ module.exports = (app) ->
                 _domain: "rfq"
                 _name: "bid_available"
                 id: event.id
-                driverName: user.name
+                driverName: store.driverUser
                 deliveryTime: time
 
               ED.sendEvent store.ESL, eventObj, callback
