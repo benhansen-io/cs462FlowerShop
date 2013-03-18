@@ -110,10 +110,12 @@ module.exports = (app) ->
           deliveryTime: req.param "delivery-time" or ""
           id: uniqueID
 
+        console.log "Sending delivery_ready event to drivers"
         AM.getDriversWithESL (error, driversarray) ->
           if error?
             res.send error, 500
           for driver in driversarray
+            console.log "Sending to driver: " + driver.name
             ed.sendevent driver.esl, eventdata
         res.redirect "/home-shopowner"
 
