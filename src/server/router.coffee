@@ -121,18 +121,23 @@ module.exports = (app) ->
 
   app.post "/driverESL/:id", (req, res) ->
     callbackESLID = req.params.id
+    console.log "Received event on /driverESL/" + callbackESLID
     AM.getDriverWithCallbackESLID callbackESLID, (e, driver) ->
       if e?
+        console.log e
         res.send e, 500
       else
         event = req.body
         if event._domain is "rfq" and event._name is "bid_available"
-          BM.addBid event.deliveryID, event.driverName, event.deliveryTime, (e) ->
+          BM.addBid event.id, event.driverName, event.deliveryTime, (e) ->
             if e?
+              console.log e
               res.send e, 500
             else
+              console.log "Bid recorded"
               res.send "Bid recorded", 200
         else
+          console.log "unknown event"
           res.send "unknown event", 400
 
   # main login page
