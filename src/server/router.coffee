@@ -78,7 +78,7 @@ module.exports = (app) ->
               ED.sendEvent store.ESL, eventObj, callback
 
             manualBid = () ->
-              console.log "placing manual bid"
+              console.log "asking whether should place manual bid"
               twilio.setMessagedReceivedHandler (req, res) ->
                 if req.body.body is "bid anyway"
                   sendBid "40 minutes", (e) ->
@@ -90,6 +90,8 @@ module.exports = (app) ->
                       res.send msg, 200
                 else
                   console.log "received unknown text reply"
+                  console.log "req.body.body: " + req.body.body
+                  console.log "req.body: " + req.body
 
               msg = "Shop address: " + event.shopAddress + "\n" +
                 "Pickup Time: " + event.pickupTime + "\n" +

@@ -12,7 +12,7 @@ exports.sendSMS = (number, message) ->
   client.sendSms
     to: number # Any number Twilio can deliver to
     from: "+18013088762" # A number you bought from Twilio and can use for outbound communication
-    body: "message" # body of the SMS message
+    body: message # body of the SMS message
   , (err, responseData) ->
     #this function is executed when a response is received from Twilio
     unless err # "err" is an error received during the request, if any
