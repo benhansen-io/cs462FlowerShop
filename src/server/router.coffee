@@ -91,7 +91,8 @@ module.exports = (app) ->
                 else
                   console.log "received unknown text reply"
                   console.log "req.body.body: " + req.body.body
-                  console.log "req.body: " + req.body
+                  console.log "req.body: " + JSON.stringify(req.body)
+                  res.send "Asking to send manual bid", 200
 
               msg = "Shop address: " + event.shopAddress + "\n" +
                 "Pickup Time: " + event.pickupTime + "\n" +
