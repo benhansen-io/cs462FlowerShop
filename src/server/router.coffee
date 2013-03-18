@@ -116,7 +116,7 @@ module.exports = (app) ->
             res.send error, 500
           for driver in driversarray
             console.log "Sending to driver: " + driver.name
-            ed.sendevent driver.esl, eventdata
+            ED.sendEvent driver.esl, eventData
         res.redirect "/home-shopowner"
 
   app.post "/driverESL/:id", (req, res) ->
