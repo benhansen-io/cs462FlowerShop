@@ -15,11 +15,6 @@ module.exports = (app) ->
   FS.routes(app)
   twilio.routes(app)
 
-  twilio.sendSMS "+18012017088", "testing"
-  twilio.setMessagedReceivedHandler (req, res) ->
-    console.log "I replaced the default handler"
-
-
   FS.listenForPush app, (user, checkinData) ->
     # too lazy for school project to relate checkin to user so all users will be updated
     # user is null
@@ -72,8 +67,36 @@ module.exports = (app) ->
           event = req.body
           if event._domain is "rfq" and event._name is "delivery_ready"
 
+            sendBid = (time, callback) ->
+              eventObj =
+                _domain: "rfq"
+                _name: "bid_available"
+                id: event.id
+                driverName: user.name
+                deliveryTime: time
+
+              ED.sendEvent store.ESL, eventObj, callback
+
             manualBid = () ->
               console.log "placing manual bid"
+              twilio.setMessagedReceivedHandler (req, res) ->
+                if req.body.body is "bid anyway"
+                  sendBid "40 minutes", (e) ->
+                    if e?
+                      console.log "Error manual automatic bid response"
+                    else
+                      msg = "Manual bid response sent successfully"
+                      console.log msg
+                      res.send msg, 200
+                else
+                  console.log "received unknown text reply"
+
+              msg = "Shop address: " + event.shopAddress + "\n" +
+                "Pickup Time: " + event.pickupTime + "\n" +
+                "Delivery Address: " + event.deliveryAddress + "\n" +
+                "Delivery Time: " + event.deliveryTime + "\n\n" +
+                "Reply 'bid anyway' to accept."
+              twilio.sendSMS "+18012017088", msg
 
             console.log "Looking to see if we should do manual/auto bid. Store: " + JSON.stringify(store)
             storeLat = parseFloat store.latLong.lat
@@ -91,14 +114,7 @@ module.exports = (app) ->
                   distance = point1.distanceTo point2
                   console.log "Calculated distance of delivery to be " + distance
                   if distance * 3.1 / 5 < 5
-                    eventObj =
-                      _domain: "rfq"
-                      _name: "bid_available"
-                      deliveryID: uniqueid.generateUniqueId()
-                      driverName: user.name
-                      deliveryTime: (distance * 2 + 5) + " minutes"
-
-                    ED.sendEvent store.ESL, eventObj, (e) ->
+                    sendBid (distance * 2 + 5) + " minutes", (e) ->
                       if e?
                         console.log "Error sending automatic bid response"
                       else
