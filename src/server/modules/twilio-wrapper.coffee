@@ -11,9 +11,11 @@ client = new TwilioClient(ACCOUNT_SID, AUTH_TOKEN, MY_HOSTNAME)
 exports.makeCall = () ->
 
   phone = client.getPhoneNumber('+18013088762')
+  console.log "Phone: " + phone
 
   phone.setup () ->
-    phone.makeCall '+8012017088', null, (call) ->
+    phone.makeCall '+18012017088', null, (call) ->
+      console.log "Call: " + call
       call.on 'answered', (callParams, response) ->
         response.append(new Twiml.Say('Howdy mom and or dad! I hope you are well! I know you know your son loves you!'));
         response.send();
