@@ -142,6 +142,7 @@ module.exports = (app) ->
           id: req.param("deliveryID")
           driverID: req.param("driverID")
         ED.sendEvent req.param("driverESL"), eventObj
+        res.redirect "/home-shopowner"
 
   app.post "/driverESL/:id", (req, res) ->
     callbackESLID = req.params.id
