@@ -202,6 +202,8 @@ var findById = function(id, callback)
 	});
 };
 
+exports.findById = findById
+
 exports.findByUsername = function(user, callback)
 {
 	accounts.findOne({user: user},

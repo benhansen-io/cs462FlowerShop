@@ -107,7 +107,7 @@ module.exports = (app) ->
           for driver in drivers
             console.log "forwarding event on to driver " + driver.name
             console.log "driver:" + JSON.stringify(driver)
-            event['driverID'] = driver._id.str
+            event['driverID'] = driver._id
             ED.sendEvent driver.esl, event, (e) ->
               if e?
                 console.log "Didn't send to one driver. Doesn't matter."
