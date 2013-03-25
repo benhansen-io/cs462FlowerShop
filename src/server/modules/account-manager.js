@@ -202,7 +202,7 @@ var findById = function(id, callback)
 	});
 };
 
-exports.findById = findById
+exports.findById = findById;
 
 exports.findByUsername = function(user, callback)
 {
