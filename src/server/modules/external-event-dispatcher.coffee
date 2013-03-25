@@ -11,7 +11,7 @@ post = (postOptions, postData, callback) ->
     res.on 'data', (chunk) ->
       output += chunk
       if callback?
-        callback null, result
+        callback null, output
 
     res.on 'end', () ->
       if callback?
