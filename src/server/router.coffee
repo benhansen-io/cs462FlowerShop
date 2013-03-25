@@ -154,6 +154,7 @@ module.exports = (app) ->
         if not driver?
           console.log "driver is null"
           res.send 500
+          return
         console.log "driver: " + JSON.stringify(driver)
         event = req.body
         if event._domain is "rfq" and event._name is "bid_available"
