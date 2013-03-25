@@ -151,6 +151,10 @@ module.exports = (app) ->
         console.log e
         res.send e, 500
       else
+        if not driver?
+          console.log "driver is null"
+          res.send 500
+        console.log "driver: " + JSON.stringify(driver)
         event = req.body
         if event._domain is "rfq" and event._name is "bid_available"
           BM.addBid event.id, event.driverID, driver.esl, event.driverName, event.deliveryTime, (e) ->
@@ -163,6 +167,8 @@ module.exports = (app) ->
         else if event._domain is "delivery" and event._name is "complete"
           # just record it in DB
           console.log "Delivery Complete with deliveryID: " + event.deliveryID
+          console.log "recorded"
+          res.send "recorded", 200
         else
           console.log "unknown event: " + JSON.stringify(event)
           console.log "raw: " + JSON.stringify(req.body)
