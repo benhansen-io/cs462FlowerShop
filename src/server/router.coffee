@@ -10,6 +10,26 @@ uniqueid = require("./modules/uniqueid")
 twilio = require('./modules/twilio-wrapper')
 GU = require('geoutils')
 
+phone_number = "+18012017088"
+
+sendDeliveredEvent event, store, callback ->
+  eventObj =
+    _domain: "delivery"
+    _name: "complete"
+    id: event.id
+
+  ED.sendEvent, event.esl, eventObj, (e) ->
+    if e?
+      console.log e
+      callback e
+    else
+      ED.sendEvent, store.ESL, eventObj, (e) ->
+        if e?
+          console.log e
+          callback e
+        else
+          callback null
+
 module.exports = (app) ->
 
   FS.routes(app)
@@ -55,6 +75,8 @@ module.exports = (app) ->
           else
             res.redirect "/"
 
+
+
   app.post "/storeESL/:id", (req, res) ->
     callbackESLID = req.params.id
     SM.getStoreByESLID callbackESLID, (e, store) ->
@@ -65,7 +87,24 @@ module.exports = (app) ->
           res.send "No store has this ESL", 400
         else
           event = req.body
-          if event._domain is "rfq" and event._name is "delivery_ready"
+          if event._domain is "rfq" and event._name is "bid_awarded"
+            twilio.sendSMS phone_number, "bid awarded for delivery: " + event.id
+            twilio.setMessagedReceivedHandler (req, res) ->
+              if req.body.Body is "delivered"
+                sendDeliveredEvent event, store, (e) ->
+                  if e?
+                    console.log e
+                    res.send e, 500
+                  else
+                    msg = "sent delivered event successfully"
+                    console.log msg
+                    res.send msg, 200
+
+          else if event._domain is "rfq" and event._name is "delivery_ready"
+            msg = "Shop address: " + event.shopAddress + "\n" +
+              "Pickup Time: " + event.pickupTime + "\n" +
+              "Delivery Address: " + event.deliveryAddress + "\n" +
+              "Delivery Time: " + event.deliveryTime
 
             sendBid = (time, callback) ->
               eventObj =
@@ -75,7 +114,7 @@ module.exports = (app) ->
                 driverName: store.driverUser
                 deliveryTime: time
 
-              ED.sendEvent store.ESL, eventObj, callback
+              ED.sendEvent event.esl, eventObj, callback
 
             manualBid = () ->
               console.log "asking whether should place manual bid"
@@ -93,12 +132,7 @@ module.exports = (app) ->
                   console.log "req.body.Body: " + req.body.Body
                   console.log "req.body: " + JSON.stringify(req.body)
 
-              msg = "Shop address: " + event.shopAddress + "\n" +
-                "Pickup Time: " + event.pickupTime + "\n" +
-                "Delivery Address: " + event.deliveryAddress + "\n" +
-                "Delivery Time: " + event.deliveryTime + "\n\n" +
-                "Reply 'bid anyway' to accept."
-              twilio.sendSMS "+18012017088", msg
+              twilio.sendSMS phone_number, msg + "\n\nReply 'bid anyway' to accept."
               res.send "Asking to send manual bid", 200
 
             console.log "Looking to see if we should do manual/auto bid. Store: " + JSON.stringify(store)
@@ -117,6 +151,8 @@ module.exports = (app) ->
                   distance = point1.distanceTo point2
                   console.log "Calculated distance of delivery to be " + distance
                   if distance * 3.1 / 5 < 5
+
+                    twilio.sendSMS phone_number, "Bid automatically accepted\n\n" + msg
                     sendBid (distance * 2 + 5) + " minutes", (e) ->
                       if e?
                         console.log "Error sending automatic bid response"
