@@ -238,3 +238,21 @@ var findByMultipleFields = function(a, callback)
 		else callback(null, results)
 	});
 }
+
+exports.getTopDrivers = function(number, callback)
+{
+	accounts.find({type: "Driver", "esl": {$exists: 1}}).sort({ rank: -1}).limit(number).toArray(
+		function(e, res) {
+		if (e) callback(e)
+		else callback(null, res)
+	});
+}
+
+//var ObjectID = require('mongodb').ObjectID;
+//exports.getDriverByID = function(id, callback)
+//{
+//	accounts.findOne({type: "Driver", _id: ObjectID(id)}, function(e, res) {
+//		if (e) callback(e)
+//		else callback(null, res)
+//	});
+//}

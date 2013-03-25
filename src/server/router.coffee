@@ -5,6 +5,7 @@ AM = require("./modules/account-manager")
 BM = require("./modules/bid-manager")
 EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
+DM = require("./modules/delivery-manager")
 uniqueid = require("./modules/uniqueid")
 
 module.exports = (app) ->
@@ -93,31 +94,42 @@ module.exports = (app) ->
             req.session.user.location = req.param("location")
             res.redirect "/home-shopowner"
 
-  app.post "/delivery-request", (req, res) ->
-    if ensureIsSetupUser req, res
-      if req.param("pickup-time") is `undefined` or
-      req.param("delivery-location") is `undefined` or
-      not req.session.user.location?
-        res.send "missing data, make sure you have set a shop location", 400
-      else
-        uniqueID = uniqueid.generateUniqueId()
-        eventData =
-          _domain: "rfq"
-          _name: "delivery_ready"
-          shopAddress: req.session.user.location
-          pickupTime: req.param "pickup-time" or "now"
-          deliveryAddress: req.param "delivery-location"
-          deliveryTime: req.param "delivery-time" or ""
-          id: uniqueID
-
-        console.log "Sending delivery_ready event to drivers"
-        AM.getDriversWithESL (error, driversarray) ->
-          if error?
-            res.send error, 500
-          for driver in driversarray
-            console.log "Sending to driver: " + driver.name
+  app.post "/shopESL", (req, res) ->
+    console.log "Received event on /shopESL/"
+    event = req.body
+    if event._domain is "rfq" and event._name is "bid_available"
+      # notify top 3 drivers about bid
+      AM.getTopDrivers 3, (e, drivers) ->
+        if e?
+          console.log e
+          req.send e, 500
+        else
+          for driver in drivers
+            console.log "forwarding event on to driver " + driver.name
+            event['driverID'] = driver._id.str
             ED.sendEvent driver.esl, eventData
-        res.redirect "/home-shopowner"
+          res.send "All sent successfully", 200
+    else if event._domain is "rfq" and event._name is "bid_awarded"
+      # only tell the awarded driver that he has been awarded
+      AM.findById event.driverID, (e, driver) ->
+        if e?
+          console.log e
+          req.send e, 500
+        else
+          ED.sendEvent driver.esl, event
+          res.send "sent successfully", 200
+    else if event._domain is "delivery" and event._name is "picked_up"
+      # record pickup
+      MD.setPickedUpTime event.deliveryID, (e) ->
+        if e?
+          console.log e
+          res.send e, 500
+        else
+          res.send "recorded", 200
+    else
+      console.log "unknown event"
+      res.send "unknown event", 400
+
 
   app.post "/driverESL/:id", (req, res) ->
     callbackESLID = req.params.id
@@ -128,14 +140,22 @@ module.exports = (app) ->
         res.send e, 500
       else
         event = req.body
-        if event._domain is "rfq" and event._name is "bid_available"
-          BM.addBid event.id, event.driverName, event.deliveryTime, (e) ->
+        if event._domain is "delivery" and event._name is "complete"
+          MD.setDeliveryCompleteTime event.deliveryID, (e) ->
             if e?
               console.log e
               res.send e, 500
             else
-              console.log "Bid recorded"
-              res.send "Bid recorded", 200
+              MD.getRankChange event.deliveryID, (e, rankChange) ->
+                update =
+                  rank: driver.rank + rankChange
+                AM.addToAccount driver.user, update, (e) ->
+                  if e?
+                    console.log e
+                    res.send e, 500
+                  else
+                    console.log "complete recorded"
+                    res.send "complete recorded", 200
         else
           console.log "unknown event"
           res.send "unknown event", 400
