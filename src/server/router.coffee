@@ -18,7 +18,7 @@ sendDeliveredEvent event, store, callback ->
     _name: "complete"
     id: event.id
 
-  ED.sendEvent, event.esl, eventObj, (e) ->
+  ED.sendEvent event.esl, eventObj, (e) ->
     if e?
       console.log e
       callback e
