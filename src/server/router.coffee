@@ -12,7 +12,7 @@ GU = require('geoutils')
 
 phone_number = "+18012017088"
 
-sendDeliveredEvent event, store, callback ->
+sendDeliveredEvent = (event, store, callback) ->
   eventObj =
     _domain: "delivery"
     _name: "complete"
