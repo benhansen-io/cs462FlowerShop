@@ -107,8 +107,10 @@ module.exports = (app) ->
           for driver in drivers
             console.log "forwarding event on to driver " + driver.name
             event['driverID'] = driver._id.str
-            ED.sendEvent driver.esl, eventData
-          res.send "All sent successfully", 200
+            ED.sendEvent driver.esl, event, (e) ->
+              if e?
+                console.log "Didn't send to one driver. Doesn't matter."
+          res.send "All sent", 200
     else if event._domain is "rfq" and event._name is "bid_awarded"
       # only tell the awarded driver that he has been awarded
       AM.findById event.driverID, (e, driver) ->
