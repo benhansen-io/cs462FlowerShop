@@ -163,6 +163,9 @@ module.exports = (app) ->
                   else
                     manualBid()
                     return
+                else
+                  manualBid()
+                  return
             else
               msg = "lat/lng not a number: " + JSON.stringify(event)
               console.log msg

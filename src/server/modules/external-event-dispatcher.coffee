@@ -24,6 +24,8 @@ post = (postOptions, postData, callback) ->
   postReq.end()
 
 module.exports.sendEvent = (esl, eventObject, callback) ->
+  console.log "sending event to " + esl
+  console.log "\t" + eventObject
   urlObject = url.parse esl
   postData = querystring.stringify eventObject
 
