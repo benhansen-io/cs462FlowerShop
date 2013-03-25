@@ -127,7 +127,7 @@ module.exports = (app) ->
             ED.sendEvent driver.esl, eventData
         res.redirect "/home-shopowner"
 
-  app.post "/selectBid", (req, res) ->
+  app.get "/selectBid", (req, res) ->
     if ensureIsSetupUser req, res
       if req.param("deliveryID") is `undefined` or
       req.param("driverESL") is `undefined` or
