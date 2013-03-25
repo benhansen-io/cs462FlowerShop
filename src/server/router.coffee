@@ -23,7 +23,7 @@ sendDeliveredEvent event, store, callback ->
       console.log e
       callback e
     else
-      ED.sendEvent, store.ESL, eventObj, (e) ->
+      ED.sendEvent store.ESL, eventObj, (e) ->
         if e?
           console.log e
           callback e
