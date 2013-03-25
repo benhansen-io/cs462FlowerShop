@@ -68,7 +68,6 @@ module.exports = (app) ->
                 res.send "Failed to get bids for deliveryID: " + id, 500
                 c e
               else
-                console.log "Adding bids to bidsObj: " + JSON.stringify(bids)
                 bidsObj[id] = bids
                 c null
           , (e, unused) ->
@@ -165,7 +164,7 @@ module.exports = (app) ->
           # just record it in DB
           console.log "Delivery Complete with deliveryID: " + event.deliveryID
         else
-          console.log "unknown event"
+          console.log "unknown event: " + JSON.stringify(event)
           res.send "unknown event", 400
 
   # main login page
