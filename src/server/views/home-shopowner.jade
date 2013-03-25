@@ -51,4 +51,4 @@ block homecontent
         .subheading Delivery: #{deliveryID}
         each bid in bids
           div
-            a(href='/selectBid?driverID='+bid.driverID+'&deliveryID='+bid.deliveryID) #{bid.driverName} in #{bid.deliveryTime}
+            a(href='/selectBid?driverID='+bid.driverID+'&deliveryID='+bid.deliveryID+'&driverESL='+bid.driverESL) #{bid.driverName} in #{bid.deliveryTime}
