@@ -22,6 +22,7 @@ block content
       form.form-horizontal.well.span6
         fieldset
           label For general account info (name, password...) visit your <a href="/account">account page</a>.
+<!--
     .form-container
       form(method="post", action="update-phone")#account-form.form-horizontal.well.span6
         fieldset
@@ -32,13 +33,14 @@ block content
               input#phone-tf.input-xlarge(type='text', name='phone')
           .form-actions
                   button(type='submit')#account-form-btn2.btn Submit
+                  -->
     .form-container
       form.form-horizontal.well.span6
         fieldset
           p#sub1.subheading Registered Stores
           ul
             each store in stores
-              li '#{store.name}' at #{store.latLong.lat},#{store.latLong.lng} with remote ESL #{store.ESL} and local ESL '{{thissiteurl}}/storeESL/#{store.callbackESLID}'
+              li '#{store.name}' with remote ESL #{store.ESL} and local ESL '{{thissiteurl}}/storeESL/#{store.callbackESLID}'
       form(method="post", action="add-store")#account-form.form-horizontal.well.span6
         fieldset
           p#sub1.subheading Add new store
@@ -46,14 +48,6 @@ block content
             label.control-label(for='name-tf') Name
             .controls
               input#name-tf.input-xlarge(type='text', name='name')
-          #lat-cg.control-group
-            label.control-label(for='lat-tf') Lat
-            .controls
-              input#lat-tf.input-xlarge(type='text', name='lat')
-          #longitude-cg.control-group
-            label.control-label(for='longitude-tf') Long
-            .controls
-              input#longitude-tf.input-xlarge(type='text', name='longitude')
           #esl-cg.control-group
             label.control-label(for='esl-tf') Store ESL
             .controls

@@ -22,12 +22,11 @@ db.open (e, d) ->
 
 stores = db.collection("stores")
 
-exports.addStore = (driverUser, name, latLong, esl, callback) ->
+exports.addStore = (driverUser, name, esl, callback) ->
   callbackESLID = uniqueid.generateUniqueId()
   newData =
     driverUser: driverUser
     name: name
-    latLong: latLong
     callbackESLID: callbackESLID
     ESL: esl
   stores.insert(newData, {safe: true}, callback);

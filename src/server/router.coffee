@@ -58,7 +58,7 @@ module.exports = (app) ->
       if req.param("name") is `undefined`
         res.send "missing data", 400
       else
-        SM.addStore req.session.user.user, req.param("name"), {lat: req.param("lat"), lng: req.param("longitude")}, req.param("esl"), (e, o) ->
+        SM.addStore req.session.user.user, req.param("name"), req.param("esl"), (e, o) ->
           if e
             res.send "error adding store", 400
           else
@@ -137,8 +137,8 @@ module.exports = (app) ->
               res.send "Asking to send manual bid", 200
 
             console.log "Looking to see if we should do manual/auto bid. Store: " + JSON.stringify(store)
-            storeLat = parseFloat store.latLong.lat
-            storeLng = parseFloat store.latLong.lng
+            storeLat = parseFloat event.shopLat
+            storeLng = parseFloat event.shopLng
             if not isNaN(storeLat) and not isNaN(storeLng)
               AM.findByUsername store.driverUser, (e, user) ->
                 if e?
