@@ -131,8 +131,8 @@ module.exports = (app) ->
   app.post "/selectBid", (req, res) ->
     if ensureIsSetupUser req, res
       if req.param("deliveryID") is `undefined` or
-        req.param("driverESL") is `undefined` or
-        req.param("driverID") is `undefined`
+      req.param("driverESL") is `undefined` or
+      req.param("driverID") is `undefined`
         err = "Invalid params"
         console.log err
         res.send err, 500
