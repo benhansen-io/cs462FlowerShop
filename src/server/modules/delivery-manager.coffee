@@ -5,7 +5,7 @@ dbPort = 27017
 dbHost = "localhost"
 dbName = "node-login"
 
-# establish the database connection 
+# establish the database connection
 db = new MongoDB(dbName, new Server(dbHost, dbPort,
   auto_reconnect: true
 ),
@@ -20,13 +20,13 @@ db.open (e, d) ->
 
 deliveries = db.collection("deliveries")
 
-exports.addDelivery id ->
+exports.addDelivery = (id) ->
 
-exports.setBidAwardedTime id ->
+exports.setBidAwardedTime (id) ->
 
-exports.setPickedUpTime id ->
+exports.setPickedUpTime (id) ->
 
-exports.setDeliveryCompleteTime id ->
+exports.setDeliveryCompleteTime (id) ->
 
-exports.getRankChange id ->
+exports.getRankChange (id) ->
   return 1
