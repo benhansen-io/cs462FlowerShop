@@ -97,7 +97,7 @@ module.exports = (app) ->
   app.post "/shopESL", (req, res) ->
     console.log "Received event on /shopESL/"
     event = req.body
-    if event._domain is "rfq" and event._name is "bid_available"
+    if event._domain is "rfq" and event._name is "delivery_ready"
       # notify top 3 drivers about bid
       AM.getTopDrivers 3, (e, drivers) ->
         if e?
