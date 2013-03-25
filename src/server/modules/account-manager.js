@@ -202,7 +202,15 @@ var findById = function(id, callback)
 	});
 };
 
-exports.findById = findById;
+exports.findById = function(id, callback)
+{
+	accounts.findOne({_id: getObjectId(id)},
+		function(e, res) {
+		if (e) callback(e)
+		else callback(null, res)
+	});
+};
+
 
 exports.findByUsername = function(user, callback)
 {
