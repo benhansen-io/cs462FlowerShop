@@ -165,7 +165,7 @@ module.exports = (app) ->
           console.log "Delivery Complete with deliveryID: " + event.deliveryID
         else
           console.log "unknown event: " + JSON.stringify(event)
-          console.log "raw: " + req.body
+          console.log "raw: " + JSON.stringify(req.body)
           res.send "unknown event", 400
 
   # main login page
