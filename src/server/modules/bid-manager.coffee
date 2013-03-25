@@ -20,9 +20,11 @@ db.open (e, d) ->
 
 bids = db.collection("bids")
 
-exports.addBid = (deliveryID, driverName, deliveryTime, callback) ->
+exports.addBid = (deliveryID, driverID, driverESL, driverName, deliveryTime, callback) ->
   newData =
     deliveryID: deliveryID
+    driverID: driverID
+    driverESL: driverESL
     driverName: driverName
     deliveryTime: deliveryTime
   bids.insert(newData, {safe: true}, callback);

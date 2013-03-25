@@ -7,6 +7,8 @@ EM = require("./modules/email-dispatcher")
 ED = require("./modules/external-event-dispatcher")
 uniqueid = require("./modules/uniqueid")
 
+site_url = "https://ec2-54-242-133-248.compute-1.amazonaws.com"
+
 module.exports = (app) ->
   # main login page
   app.get "/", (req, res) ->
@@ -85,12 +87,16 @@ module.exports = (app) ->
         res.send "missing data", 400
       else
         AM.addToAccount req.session.user.user,
-          location: req.param("location"),
+          location: req.param("location")
+          lat: req.param("lat")
+          lng: req.param("lng"),
         , (e, o) ->
           if e
             res.send "error-updating type", 400
           else
             req.session.user.location = req.param("location")
+            req.session.user.lat = req.param("lat")
+            req.session.user.lng = req.param("lng")
             res.redirect "/home-shopowner"
 
   app.post "/delivery-request", (req, res) ->
@@ -105,6 +111,8 @@ module.exports = (app) ->
           _domain: "rfq"
           _name: "delivery_ready"
           shopAddress: req.session.user.location
+          shopLat: req.session.user.lat
+          shopLng: req.session.user.lng
           pickupTime: req.param "pickup-time" or "now"
           deliveryAddress: req.param "delivery-location"
           deliveryTime: req.param "delivery-time" or ""
@@ -116,8 +124,23 @@ module.exports = (app) ->
             res.send error, 500
           for driver in driversarray
             console.log "Sending to driver: " + driver.name
+            eventData['esl'] = site_url + "/driverESL/" + driver.callbackESLID
             ED.sendEvent driver.esl, eventData
         res.redirect "/home-shopowner"
+
+  app.post "/selectBid", (req, res) ->
+    if ensureIsSetupUser req, res
+      if req.param("deliveryID") is `undefined` or
+        req.param("driverESL") is `undefined` or
+        req.param("driverID") is `undefined`
+        err = "Invalid params"
+        console.log err
+        res.send err, 500
+      else
+        eventObj =
+          deliveryID: req.param("deliveryID")
+          driverID: req.param("driverID")
+        ED.sendEvent req.param("driverESL"), eventObj
 
   app.post "/driverESL/:id", (req, res) ->
     callbackESLID = req.params.id
@@ -129,7 +152,7 @@ module.exports = (app) ->
       else
         event = req.body
         if event._domain is "rfq" and event._name is "bid_available"
-          BM.addBid event.id, event.driverName, event.deliveryTime, (e) ->
+          BM.addBid event.id, event.driverID, driver.esl, event.driverName, event.deliveryTime, (e) ->
             if e?
               console.log e
               res.send e, 500

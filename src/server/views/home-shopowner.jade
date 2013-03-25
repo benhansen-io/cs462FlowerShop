@@ -10,9 +10,15 @@ block homecontent
       hr
       fieldset
         #flower-shop-location-cg.control-group
-          label.control-label(for='name-tf') Store Location
+          label.control-label(for='location-tf') Store Location
           .controls
-            input#flower-shop-location-tf.input-xlarge(type='text', name='location', value= user.location)
+            input#location-tf.input-xlarge(type='text', name='location', value= user.location)
+          label.control-label(for='lat-tf') Store lat
+          .controls
+            input#lat-tf.input-xlarge(type='text', name='lat', value= user.lat)
+          label.control-label(for='lng-tf') Store lng
+          .controls
+            input#lng-tf.input-xlarge(type='text', name='lng', value= user.lng)
         .form-actions
           button(type='submit')#account-form-btn2.btn Update
 
@@ -44,5 +50,5 @@ block homecontent
       fieldset
         .subheading Delivery: #{deliveryID}
         each bid in bids
-          div #{bid.driverName} in #{bid.deliveryTime}
-
+          div
+            a(href='/selectBid?driverID='+bid.driverID+'&deliveryID='+bid.deliveryID) #{bid.driverName} in #{bid.deliveryTime}
