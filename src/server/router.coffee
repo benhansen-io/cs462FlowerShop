@@ -112,6 +112,7 @@ module.exports = (app) ->
                 _name: "bid_available"
                 id: event.id
                 driverName: store.driverUser
+                driverID: event.driverID
                 deliveryTime: time
 
               ED.sendEvent event.esl, eventObj, callback
