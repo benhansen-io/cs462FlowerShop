@@ -22,11 +22,11 @@ deliveries = db.collection("deliveries")
 
 exports.addDelivery = (id) ->
 
-exports.setBidAwardedTime (id) ->
+exports.setBidAwardedTime = (id) ->
 
-exports.setPickedUpTime (id) ->
+exports.setPickedUpTime = (id) ->
 
-exports.setDeliveryCompleteTime (id) ->
+exports.setDeliveryCompleteTime = (id) ->
 
-exports.getRankChange (id) ->
+exports.getRankChange = (id) ->
   return 1
