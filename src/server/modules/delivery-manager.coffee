@@ -20,13 +20,17 @@ db.open (e, d) ->
 
 deliveries = db.collection("deliveries")
 
-exports.addDelivery = (id) ->
+exports.addDelivery = (id, callback) ->
+  callback()
 
-exports.setBidAwardedTime = (id) ->
+exports.setBidAwardedTime = (id, callback) ->
+  callback()
 
-exports.setPickedUpTime = (id) ->
+exports.setPickedUpTime = (id, callback) ->
+  callback()
 
-exports.setDeliveryCompleteTime = (id) ->
+exports.setDeliveryCompleteTime = (id, callback) ->
+  callback()
 
-exports.getRankChange = (id) ->
-  return 1
+exports.getRankChange = (id, callback) ->
+  callback(null, 1)
