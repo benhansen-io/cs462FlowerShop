@@ -150,6 +150,9 @@ module.exports = (app) ->
               res.send e, 500
             else
               DM.getRankChange event.deliveryID, (e, rankChange) ->
+                rank = 0
+                if driver.rank?
+                  rank = driver.rank
                 update =
                   rank: driver.rank + rankChange
                 AM.addToAccount driver.user, update, (e) ->
