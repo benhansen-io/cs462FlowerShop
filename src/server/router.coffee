@@ -123,7 +123,7 @@ module.exports = (app) ->
           res.send "sent successfully", 200
     else if event._domain is "delivery" and event._name is "picked_up"
       # record pickup
-      MD.setPickedUpTime event.deliveryID, (e) ->
+      DM.setPickedUpTime event.deliveryID, (e) ->
         if e?
           console.log e
           res.send e, 500
@@ -144,12 +144,12 @@ module.exports = (app) ->
       else
         event = req.body
         if event._domain is "delivery" and event._name is "complete"
-          MD.setDeliveryCompleteTime event.deliveryID, (e) ->
+          DM.setDeliveryCompleteTime event.deliveryID, (e) ->
             if e?
               console.log e
               res.send e, 500
             else
-              MD.getRankChange event.deliveryID, (e, rankChange) ->
+              DM.getRankChange event.deliveryID, (e, rankChange) ->
                 update =
                   rank: driver.rank + rankChange
                 AM.addToAccount driver.user, update, (e) ->
