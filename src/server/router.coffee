@@ -138,7 +138,9 @@ module.exports = (app) ->
         res.send err, 500
       else
         eventObj =
-          deliveryID: req.param("deliveryID")
+          _domain: "rfq"
+          _name: "bid_awarded"
+          id: req.param("deliveryID")
           driverID: req.param("driverID")
         ED.sendEvent req.param("driverESL"), eventObj
 
@@ -159,6 +161,9 @@ module.exports = (app) ->
             else
               console.log "Bid recorded"
               res.send "Bid recorded", 200
+        else if event._domain is "delivery" and event._name is "complete"
+          # just record it in DB
+          console.log "Delivery Complete with deliveryID: " + event.deliveryID
         else
           console.log "unknown event"
           res.send "unknown event", 400
