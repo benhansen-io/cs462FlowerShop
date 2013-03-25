@@ -232,7 +232,7 @@ exports.getDriversWithESL = function(callback)
 
 exports.getDriverWithCallbackESLID = function(callbackESLID, callback)
 {
-	accounts.findOne({type: "Driver", "callbackESL": callbackESLID},
+	accounts.findOne({type: "Driver", "callbackESLID": callbackESLID},
           function(e, res) {
             if (e) callback(e)
             else callback(null, res)
